@@ -157,8 +157,8 @@ All other columns refer to citation keys for studies identified through literatu
 |-----------|-------------------------------------------------------------------|
 | elevation | Upper elevation of each 100-m elevational band in metres |
 | site      | Name of site for which the MDE null model was run |
-| area2d    | total planar area in km^2^ for each elevational band  |
-| area3d    | total slope-corrected area in km^2^ for each elevational band  |
+| area2d    | total planar area in km<sup>2</sup> for each elevational band  |
+| area3d    | total slope-corrected area in km<sup>2</sup> for each elevational band  |
 
 
 ## Codebook for [band_richness.csv](/output/band_richness.csv)
