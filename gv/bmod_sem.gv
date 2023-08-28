@@ -1,0 +1,39 @@
+digraph G {
+    
+    layout="neato"
+    edge [fontname="helvetica", fontcolor="grey40", color="grey40", fontsize=10]
+    node [shape="Mrecord", style="filled", fillcolor="grey95", 
+    fontname="helvetica"]
+    
+    MAT[label="MAT", fillcolor="#fff5ee", color="#d55e00", pos="-2.25, 3.75!"]
+    TSE[label="TSE", fillcolor="#fff5ee", color="#d55e00", pos="-0.00, 3.75!"]
+    MAP[label="MAP", fillcolor="#E0F2FD", color="#659ABB", pos=" 2.25, 3.75!"]
+    PSE[label="PSE", fillcolor="#E0F2FD", color="#659ABB", pos=" 2.25, 0.00!"]
+    MTP[label="MAT&times;MAP", fillcolor="#f2edfb", color="#6f41cf", pos="0, 2!"]
+    
+    NPP[label="NPP",    fillcolor="#ecfffa", color="#009e73", pos="-2.25, 2.0!"]
+    PET[label="PET",    fillcolor="#fdfbe6", color="#aea30e", pos=" 2.25, 2.0!"]
+    S[label="Richness", fillcolor="#686868", color="#c0c0c0", pos=" 0.00, 0.0!",
+    fontcolor= "white"]
+    
+    MAT -> S[label="-3.02***", penwidth=5.00, style="dashed", color="#d55e00"]		
+    MAP -> S[label="-1.97***", penwidth=3.25, style="dashed", color="#d55e00"]		
+    PSE -> S[label="0.26***",  penwidth=0.45, style="solid",  color="#0072b2"]		
+    MTP -> S[label="2.04***",  penwidth=3.35, style="solid",  color="#0072b2"]		
+    PET -> S[label="-1.41**",  penwidth=2.35, style="dashed", color="#d55e00"]		
+    NPP -> S[label="0.74***",  penwidth=1.20, style="solid",  color="#0072b2"]
+    
+    MAT -> MTP[label="2.2***",   penwidth=3.65, style="solid",  color = "#0072b2"]		
+    TSE -> MTP[label="-0.5***",  penwidth=0.85, style="dashed", color = "#d55e00"]		
+    MAP -> MTP[label="0.67***",  penwidth=1.10, style="solid",  color = "#0072b2"]		
+    PSE -> MTP[label="-0.24*",   penwidth=0.40, style="dashed", color = "#d55e00"]
+    MAT -> PET[label="0.68***",  penwidth=1.10, style="solid",  color = "#0072b2"]		
+    TSE -> PET[label="0.05*",    penwidth=0.10, style="solid",  color = "#0072b2"]		
+    MAP -> PET[label="-0.23***", penwidth=0.40, style="dashed", color = "#d55e00"]		
+    PSE -> PET[label="0.06**",   penwidth=0.10, style="solid",  color = "#0072b2"]		
+    MAT -> NPP[label="-0.9***",  penwidth=1.50, style="dashed", color = "#d55e00"]		
+    TSE -> NPP[label="-0.6***",  penwidth=1.00, style="dashed", color = "#d55e00"]		
+    MAP -> NPP[label="-1.44***", penwidth=2.40, style="dashed", color = "#d55e00"]		
+    MTP -> NPP[label="1.02***",  penwidth=1.70, style="solid",  color = "#0072b2"]
+
+}

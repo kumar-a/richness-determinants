@@ -1,0 +1,28 @@
+digraph G {
+    
+    layout="neato"
+    splines="curved"
+    edge [fontname=helvetica, fontcolor=grey40, color=grey40]
+    node [shape="Mrecord", style="filled", fillcolor="grey95", 
+    fontname="helvetica"]
+    
+    temp[label="Temperature",   fillcolor="#fff5ee", color="#d55e00", pos="-1.25,  2.00!"]
+    prec[label="Precipitation", fillcolor="#edf8ff", color="#0072b2", pos=" 1.25,  2.00!"]
+    clim[label="Climate",       fillcolor="#f2edfb", color="#6f41cf", pos=" 0.00,  1.25!"]
+    enrg[label="Energy",        fillcolor="#ecfffa", color="#009e73", pos="-1.50,  0.00!"]
+    watr[label="Water",         fillcolor="#fdfbe6", color="#aea30e", pos=" 1.50,  0.00!"]
+    hetr[label="Heterogeneity", fillcolor="#f7ebf2", color="#a43f77", pos=" 0.00, -1.25!"]
+    sr[label="Richness",        fillcolor="#686868", color="#c0c0c0", pos=" 0.00,  0.00!", fontcolor= "white"]
+    
+    // paths and path names
+    temp -> sr [taillabel="a", color="#d55e00", fontcolor="#d55e00"]
+    prec -> sr [taillabel="b", color="#0072b2", fontcolor="#0072b2"]
+    clim -> sr [label="c",     color="#6f41cf", fontcolor="#6f41cf"]
+    enrg -> sr [label="d",     color="#009e73", fontcolor="#009e73"] 
+    hetr -> sr [label="e",     color="#a43f77", fontcolor="#a43f77"]
+    watr -> sr [label="f",     color="#aea30e", fontcolor="#aea30e"]
+    
+    {temp prec} -> clim -> {enrg watr} -> hetr
+    temp -> enrg
+    prec -> watr
+}
