@@ -1,6 +1,9 @@
 ---
 title: "Determinants of Plant Species Richness along Elevational Gradients: Insights with Climate, Energy and Water-Energy Dynamics"
 
+date: last-modified
+date-format: "DD MMM YYYY"
+
 author:
   - name: Abhishek Kumar
     url: https://akumar.netlify.app/
@@ -9,31 +12,29 @@ author:
     affiliation: Panjab University, Chandigarh
     
   - name: Meenu Patil
-    url: https://www.researchgate.net/profile/Meenu-Patil
     orcid: 0000-0002-7664-7877
-    email: patilmeenu2@gmail.com
     affiliation: Panjab University, Chandigarh
     
   - name: Pardeep Kumar
-    url: https://www.researchgate.net/profile/Pardeep-Kumar-22
     orcid: 0000-0001-6707-1485
-    email: pardeepmor989@gmail.com
     affiliation: Panjab University, Chandigarh
     
   - name: Anand Narain Singh
-    url: https://www.researchgate.net/profile/Anand-Singh-15
     orcid: 0000-0002-0148-8680
-    email: dranand1212@gmail.com
     affiliation: Panjab University, Chandigarh
 
 bibliography: refs.bib
 csl: apa7.csl
 
 format: 
-  
+  html:
+    default-image-extension: svg
+    number-sections: true
+    toc: true
+    toc-depth: 2
   pdf:
     documentclass: scrartcl
-    papersize: letter
+    papersize: a4
     number-sections: true
     mainfont: Arial
     fontsize: 10pt
@@ -41,9 +42,31 @@ format:
     sansfont: Arial
     colorlinks: true
     link-citations: true
-    citecolor: "#0000ff"
+    citecolor: blue
     default-image-extension: pdf
     code-block-bg: true
+    
+crossref:
+  fig-title: "Figure"
+  fig-prefix: "Figure"
+  tbl-title: "Table"
+  tbl-prefix: "Table"
+  title-delim: ": "
+  custom:
+    - kind: float
+      key: suppfig
+      latex-env: suppfig
+      reference-prefix: "Figure S"
+      caption-location: bottom
+      space-before-numbering: false
+      latex-list-of-description: Supplementary Figure
+    - kind: float
+      key: supptbl
+      latex-env: supptbl
+      reference-prefix: "Table S"
+      caption-location: top
+      space-before-numbering: false
+      latex-list-of-description: Supplementary Table
 ---
 
 ```{r setup, include=FALSE}
@@ -54,6 +77,7 @@ knitr::opts_chunk$set(
 
 ## load packages
 library(DHARMa)         ## GLM model diagnostics
+library(flextable)
 library(ggpubr)
 library(rstatix)        ## statistical hypothesis testing
 library(sf)             ## vector data handling
@@ -85,82 +109,97 @@ theme_set(
 #   "#a09700", "#dcbb50", "#fcd57a", "#d16e3f"
 # )
 
+set_flextable_defaults(font.size = 10)
 ```
 
 # Abstract {.unnumbered}
 
-Understanding the patterns and processes of species distributions has long remained a central focus of biogeographical and ecological research. While the evidence for elevational patterns in species richness is widespread, our understanding of underlying causes and mechanisms remains limited. Therefore, this study aimed to entangle the influence of environmental variables on plant species richness along elevational gradients in the Western Himalayas. We compiled elevational distribution for about 1150 vascular plants using the published literature and available database. The species richness was estimated in 100-m elevational bands using the range interpolation method. We used the generalised linear model and structural equation modelling (SEM) framework to identify the direct and indirect effects of climatic factors on species richness. Our results indicated that primary environmental correlates of species richness varied with elevational gradients. Climatic variables combined with energy and water availability were more important than the topographic heterogeneity, suggesting species richness is shaped by climatic tolerances rather than habitat diversity at larger scales. Further, the direct effects of climatic variables were more substantial than their indirect effects, indicating that climate directly influences metabolism and physiology. The indirect effects of climate are more mediated by water--energy dynamics than the energy alone. Overall, our findings emphasise the importance of considering direct effects and interactions among environmental variables while studying the underlying mechanisms governing elevational biodiversity gradients.
+**Background** Understanding the patterns and processes of species distributions has long remained a central focus of biogeographical and ecological research. While the evidence for elevational patterns in species richness is widespread, our understanding of underlying causes and mechanisms remained limited. Therefore, this study aimed to entangle the influence of environmental variables on plant species richness along elevational gradients in the Western Himalayas. 
+
+**Methods** We compiled elevational distribution for about 1150 vascular plants using the published literature and available database. The species richness was estimated in 100-m elevational bands using the range interpolation method. We used the generalised linear model and structural equation modelling (SEM) framework to identify the direct and indirect effects of climatic factors on species richness.
+
+**Results** Our results indicated that primary environmental correlates of species richness varied with elevational gradients. Climatic variables combined with energy and water availability were more important than the topographic heterogeneity. Further, the direct and interaction effects of climatic variables were more substantial than their indirect effects. The indirect effects of climate are more strongly mediated by water--energy dynamics than the energy alone. 
+
+**Conclusions** Overall, our findings emphasise the importance of considering direct effects and interactions among environmental variables while studying the underlying mechanisms governing elevational biodiversity gradients. Species richness appeared to be shaped by climatic tolerances rather than habitat diversity at regional scales. This information can have implications for biodiversity dynamics under environmental change.
 
 **Keywords:** Elevational Gradient, Species Richness, Vascular Plants, Western Himalayas
 
-# Introduction
+# Background
 
-The variation in species richness along geographical gradients is a well-established phenomenon [@Rosenzweig1995]. Latitudinal and elevational gradients are two widely studied geographical gradients for understanding the patterns and processes of species distribution [@Cox2020; @Rosenzweig1995]. While latitudinal gradients have received historical attention [@Cox2020; @Rosenzweig1995; @Willig2003], elevational gradients gained importance only during the past few decades [@Lomolino2001; @McCain2010]. Elevational gradients are advantageous over latitudinal gradients because they provide diverse climatic and vegetational zones over shorter distances. Studies on elevational gradients suggest species richness varies non-randomly and exhibits predictable patterns across elevational gradients. However, these studies showed that species richness could follow unimodal, decreasing, increasing, or other complex patterns [@Costa2023; @Guo2013; @Rahbek1995; @Rahbek2005]. These variations in elevational patterns indicate that multiple factors can synergistically shape the patterns of species richness [@Rahbek2019a; @Rahbek2019b].
+The variation in species richness along geographical gradients is a well-established phenomenon [@Dani2023; @Guo2013; @Lomolino2001; @McCain2010; @Rosenzweig1995]. Latitudinal and elevational gradients are two widely studied geographical gradients for understanding the patterns and processes of species distribution [@Cox2020; @Rosenzweig1995]. While latitudinal gradients have received historical attention [@Cox2020; @Rosenzweig1995; @Willig2003], elevational gradients gained importance only during past the few decades [@Dani2023; @Lomolino2001; @McCain2010]. Compared to latitudinal gradients, elevational gradients offer a unique advantage by providing diverse climatic and vegetational zones over shorter distances. Such condensed vegetation zones can facilitate the study of species distributions regulated by ecological processes, including dispersal, adaptation, and species interactions. 
 
-Numerous hypotheses have been proposed to explain the broad-scale patterns of species richness [@Gaston2000; @Willig2003], and some of these also apply to elevational gradients [@McCain2010]. A group of hypotheses propose climatic factors as direct determinants of species richness at broader scales [@Currie2004; @Francis2003; @Price2010]. Firstly, the *metabolic theory of ecology* links temperature to metabolic rates through chemical kinetics [@Price2010] and predicts a positive relationship between species richness and temperature [@Wang2009]. Similarly, precipitation has been suggested to be positively linked with species richness [@Ahmadi2023; @Hawkins2003]. The *climatic tolerance hypothesis* states that each species can tolerate only a limited range of climatic conditions beyond which survival becomes difficult [@Currie2004]. Thus, temperature and precipitation can jointly influence species richness by regulating the physiological tolerance of each species. However, available evidence indicates that neither temperature nor precipitation solely determines the species richness [@Currie2004; @Hawkins2007].
+Available studies suggest that species richness does not vary randomly but exhibits predictable patterns along elevational gradients. However, these studies showed that species richness could follow a unimodal, decreasing, increasing or other complex patterns [@Costa2023; @Guo2013; @Rahbek1995; @Rahbek2005]. These variations in elevational patterns indicate that multiple factors can synergistically shape the patterns of species richness [@Rahbek2019a; @Rahbek2019b]. Understanding these factors is crucial for predicting how biodiversity will respond to future climate change and anthropogenic disturbances. Such knowledge is essential for not only identifying high biodiversity areas but also for their management under global environmental change. 
 
-The second group of hypotheses suggests that climate indirectly governs species richness patterns by regulating energy and water availability [@OBrien1993; @Wright1983]. The *species--energy hypothesis* predicts a positive relationship between species richness and energy availability [@Bhatta2021; @Hawkins2003; @Vetaas2019; @Wright1983]. One mechanism is proposed by the *more individual hypothesis* [@Srivastava1998], which states that higher energy availability can increase species richness by supporting more individuals and reducing the extinction risk. However, available literature indicates mixed support for this hypothesis [@Evans2005; @Storch2018]. Further, the *water--energy dynamics hypothesis* proposes that biological activity depends on the availability of liquid water, which is regulated by thermal energy. Thus, water--energy dynamics jointly determine the species richness by controlling the availability of liquid water, especially in the case of plants [@OBrien2006]. This water--energy dynamics (WED) model has been supported by recent studies on the elevational pattern of plant species [@Bhatta2021; @Thakur2022; @Tolmos2022; @Vetaas2019]. While the direct influence of climatic factors is increasingly recognised, indirect effects of climate are variable and multiple mechanisms have been proposed to explain climatic control of plant species richness [@Currie2004; @Evans2005; @Hawkins2003].
+Species distribution primarily determined by dispersal, habitat suitability and biotic interactions [@Guisan2017]. The distribution of a species is related to its ecological niche, which in turn depends on tolerance to several environmental variables, including abiotic and biotic factors [@Hutchinson1957]. While biotic factors are important at local scales, the climatic variables are principal determinants of species distribution at broader scales [@McGill2010]. Numerous hypotheses have been proposed to explain the broad-scale patterns of species richness [@Gaston2000; @Willig2003], some of these also apply to elevational gradients [@McCain2010]. 
 
-Another group of hypotheses links non-climatic factors to species richness patterns at broader scales. The *heterogeneity--richness hypothesis* posits that environmental heterogeneity determines species richness by influencing resource and habitat diversity [@Stein2014]. The underlying idea is that diverse habitats or resource-rich environments provide more niches or opportunities for species to occupy. This increased niche availability can support more species with different ecological requirements, increasing species richness. Thus, species richness appeared to be regulated by a complex interaction of multiple factors. Further, the variations in determinants of species richness indicate that our understanding of the causes and mechanisms of species richness patterns remained limited. 
+A group of hypotheses propose climatic factors as direct determinants of species richness at broader scales [@Currie2004; @Francis2003; @Price2010]. Firstly, the *metabolic theory of ecology* links temperature to metabolic rates through chemical kinetics [@Price2010] and predicts a positive relationship between species richness and temperature [@Wang2009]. Similarly, precipitation has been suggested to be positively linked with species richness [@Ahmadi2023; @Hawkins2003]. However, available evidence indicates that neither temperature nor precipitation solely determines the species richness [@Currie2004; @Hawkins2007]. The *climatic tolerance hypothesis* states that each species can tolerate only a limited range of climatic conditions beyond which its survival becomes difficult [@Currie2004]. Thus, temperature and precipitation can jointly influence species richness by regulating the physiological tolerance of each species. 
+
+The second group of hypotheses suggest that climate indirectly governs species richness patterns by regulating energy and water availability [@OBrien1993; @Wright1983]. The *species--energy hypothesis* predicts a positive relationship between species richness and energy availability [@Bhatta2021; @Hawkins2003; @Vetaas2019; @Wright1983]. One mechanism is proposed by the *more individual hypothesis* [@Srivastava1998], which states that higher energy availability can increase species richness by supporting more individuals and reducing the extinction risk. However, available literature indicates mixed support for this hypothesis [@Evans2005; @Storch2018]. Further, the *water--energy dynamics hypothesis* proposes that biological activity depends on the availability of liquid water, which is regulated by thermal energy. Thus, water--energy dynamics jointly determine the species richness by controlling the availability of liquid water, especially in the case of plants [@OBrien2006]. This water--energy dynamics (WED) model has been supported by recent studies on the elevational pattern of plant species [@Bhatta2021; @Thakur2022; @Tolmos2022; @Vetaas2019]. While the direct influence of climatic factors is increasingly recognised, indirect effects of climate are variable and multiple mechanisms have been proposed to explain climatic control of plant species richness [@Currie2004; @Evans2005; @Hawkins2003].
+
+Another group of hypotheses link non-climatic factors to species richness patterns at broader scales. The *heterogeneity--richness hypothesis* posits that environmental heterogeneity determines species richness by influencing resource and habitat diversity [@Stein2014]. The underlying idea is that diverse habitats or resource-rich environments provide more niches or opportunities for species to occupy. This increased niche availability can support more species with different ecological requirements, increasing species richness. Thus, species richness appeared to be regulated by a complex interaction of multiple factors. Further, the variations in determinants of species richness indicate that our understanding of the causes and mechanisms of species richness patterns remained limited. 
 
 ```{r}
-## save graph to pdf
+## html graphviz
 # DiagrammeR::grViz("gv/hypothetical_sem.gv")
 ```
 
-![A priori conceptual model representing the possible pathways that may determine the species richness along elevational gradients. Species richness may be regulated by the metabolic theory of ecology (a), climatic tolerance hypothesis (a, b, c), species-energy hypothesis (d), heterogeneity richness hypothesis (e) and water--energy dynamics hypothesis (f).](figs/hypothetical_sem){#fig-hypo-sem}
+![A priori conceptual model representing the possible pathways that may determine the species richness along elevational gradients. Species richness may be regulated by (a) metabolic theory of ecology; (a, b, c) climatic tolerance hypothesis; (d) species-energy hypothesis; (e) heterogeneity richness hypothesis; and (f) water--energy dynamics hypothesis](figs/fig1_hypothetical-sem){#fig-hypo-sem width=70%}
 
-A complex interplay of environmental factors with multiple mechanisms regulates species richness. In this study, we aim to untangle the contributions of different hypotheses shaping the plant species richness patterns along elevational gradients in the Himalayas (@fig-hypo-sem). Specifically, we sought to (1) identify primary environmental variables influencing species richness, (2) establish models of plant species richness along elevational gradients, (3) compare identified with existing models, and (4) explore mechanisms determining plant species richness along elevational gradients. Our investigation will not only elaborate our understanding of richness patterns but also have implications for biodiversity management in mountain ecosystems under the pressures of environmental change and anthropogenic influence.
+A complex interplay of environmental factors with multiple mechanisms regulates species richness. In this study, we aim to untangle the contributions of different hypotheses shaping the plant species richness patterns along elevational gradients in the Himalayas (@fig-hypo-sem). Specifically, we sought to (1) identify primary environmental variables influencing species richness, (2) establish models of plant species richness along elevational gradients, (3) compare identified with existing models, and (4) explore mechanisms determining plant species richness along elevational gradients. Our investigation will not only elaborate our understanding of richness patterns but also have implications for biodiversity management in mountain ecosystems, under the pressures of environmental change and anthropogenic influence.
 
-# Methodology
+# Methods
 
 ## Study area
 
-Our study aimed to investigate the significant determinants of plant species richness along elevational gradients. For this research, we selected three protected to semi-protected sites, each representing different elevational gradients within the Western Himalayas (@fig-sites). Specifically, our study sites included the Morni Hills (300--1500 m), Chail Wildlife Sanctuary (900--2100 m), and Churdhar Wildlife Sanctuary (1600--3600 m), which corresponded to lower, intermediate, and upper elevational gradients, respectively. These study sites provided us with a diverse and extensive elevational gradient, ranging from the lower foothills at 300 meters to the Churdhar Peak exceeding 3600 meters. The wide range of ecological zones and variations in topography across these sites established an ideal setting to investigate the driving factors behind plant species richness along elevational gradients in the Western Himalayas. In addition to the broad elevational gradient, our study area also exhibited notable differences in climate conditions due to their diverse elevation and topographical characteristics. Generally, the climate could be categorised into three seasons: summer, monsoon, and winter. These regions experienced a spectrum of climates, ranging from hot semi-arid (BSh) in the foothills to monsoonal warm-summer humid continental (Dwb) climate near the Churdhar Peak. The Morni Hills presented a transition from hot semi-arid (BSh) to monsoonal dry-winter humid subtropical climates (Cwa). The Chail Wildlife Sanctuary exhibited a shift from a monsoonal humid subtropical (Cwa) to a monsoonal dry-winter subtropical highland (Cwb) climate. Finally, the Churdhar Wildlife Sanctuary showcased a transition from a monsoonal dry-winter subtropical highland (Cwb) to a monsoonal warm-summer humid continental (Dwb) climate near the Churdhar Peak [@Beck2018]. 
+Our study aimed to investigate the significant determinants of plant species richness along elevational gradients. For this research, we selected three protected to semi-protected sites, each representing different elevational gradients within the Western Himalayas (@fig-sites). Specifically, our study sites included the Morni Hills (76.877--77.177&deg;E and 30.574--30.753&deg;N), Chail Wildlife Sanctuary (77.126--77.279&deg;E and 30.889--31.012&deg;N), and Churdhar Wildlife Sanctuary (77.389--77.497&deg;E and 30.810--30.910&deg;N), which corresponded to lower (300--1500 m), intermediate (900--2100 m), and upper (1600--3600 m) elevational gradients, respectively. These study sites provided us with a diverse and extensive elevational gradient, ranging from the lower foothills at 300 meters to the Churdhar Peak exceeding 3600 meters. The wide range of ecological zones and variations in topography across these sites established an ideal setting to investigate the driving factors behind plant species richness along elevational gradients in the Western Himalayas. In addition to the broad elevational gradient, our study area also exhibited notable differences in climate conditions due to their diverse elevation and topographical characteristics. Generally, the climate could be categorised into three seasons: summer, monsoon, and winter. These regions experienced a spectrum of climates, ranging from hot semi-arid (BSh) in the foothills to monsoonal warm-summer humid continental (Dwb) climate near the Churdhar Peak. The Morni Hills presented a transition from hot semi-arid (BSh) to monsoonal dry-winter humid subtropical climates (Cwa). The Chail Wildlife Sanctuary exhibited a shift from a monsoonal humid subtropical (Cwa) to a monsoonal dry-winter subtropical highland (Cwb) climate. Finally, the Churdhar Wildlife Sanctuary showcased a transition from a monsoonal dry-winter subtropical highland (Cwb) to a monsoonal warm-summer humid continental (Dwb) climate near the Churdhar Peak [@Beck2018]. 
 
 ```{r eval=FALSE}
 ## prepare and save the site map
-# source("R/make_site_map.R")
+# source("R/01_make-site-map.R")
 ```
 
-![Geographic location of Morni Hills, Chail WLS and Churdhar WLS in Western Himalayas. The inset map shows the location of the study area in the Indian Western Himalayas.](figs/site_map){#fig-sites}
+![Geographic location of Morni Hills, Chail WLS and Churdhar WLS in Western Himalayas. The inset map shows the location of the study area in the Indian Western Himalayas.](figs/fig2_site-map.png){#fig-sites}
 
-The Morni Hills hosts a variety of plant communities, including tropical mixed dry deciduous forests at lower elevations and Siwalik Chir Pine forests at higher elevations. The Chail Wildlife Sanctuary consists of subtropical Pine forests at lower elevations, transitioning to Oak forests and moist Deodar forests at higher elevations, with occasional Blue Pines interspersed. Meanwhile, the Churdhar Wildlife Sanctuary encompasses mixed coniferous forests at lower elevations, followed by Kharsu Oak forests and alpine pastures at higher elevations [@Champion1968]. Thus, our sites boast a rich diversity of plant communities, ranging from temperate forests of oak and rhododendron to alpine meadows adorned with vibrant wild-flowers. Within these diverse forests, numerous vascular plant species are found, with some species listed as Endangered (e.g., *Aconitum heterophyllum*, *Angelica glauca*, *Cypripedium himalaicum*, *Dactylorhiza hatagirea*, *Picrorhiza kurroa*, *Taxus wallichiana* and *Trillium govanianum*), Vulnerable (e.g., *Cypripedium cordigerum*, *Malaxis muscifera* and *Paris polyphylla*), and Near Threatened (e.g., *Abies spectabilis*) according to recent assessments of threatened species [@IUCN2023]. Additionally, these study areas provide vital habitats for numerous endemic wild animals, such as the Himalayan musk deer and Himalayan brown bears. Both the Chail Wildlife Sanctuary and Churdhar Wildlife Sanctuary are designated as Important Bird and Biodiversity Areas by BirdLife International [@Rahmani2016]. These areas are also home to some threatened bird species, including the Cheer Pheasant (*Catreus wallichii*), Himalayan Monal (*Lophophorus impejanus*), Indian Vulture (*Gyps indicus*), Koklass Pheasant (*Pucrasia macrolopha*), Red-headed Vulture (*Sarcogyps calvus*), and White-rumped Vulture (*Gyps bengalensis*).
+The Morni Hills host a variety of plant communities, including tropical mixed dry deciduous forests at lower elevations and Siwalik Chir Pine forests at higher elevations. The Chail Wildlife Sanctuary consists of subtropical Pine forests at lower elevations, transitioning to Oak forests and moist Deodar forests at higher elevations, with occasional Blue Pines interspersed. Meanwhile, the Churdhar Wildlife Sanctuary encompasses mixed coniferous forests at lower elevations, followed by Kharsu Oak forests and alpine pastures at higher elevations [@Champion1968]. Thus, our sites boast a rich diversity of plant communities, ranging from temperate forests of oak and rhododendron to alpine meadows adorned with vibrant wild-flowers. Within these diverse forests, numerous vascular plant species are found, with some species listed as Endangered (e.g., *Aconitum heterophyllum*, *Angelica glauca*, *Cypripedium himalaicum*, *Dactylorhiza hatagirea*, *Picrorhiza kurroa*, *Taxus wallichiana* and *Trillium govanianum*), Vulnerable (e.g., *Cypripedium cordigerum*, *Malaxis muscifera* and *Paris polyphylla*), and Near Threatened (e.g., *Abies spectabilis*) according to recent assessments of threatened species [@IUCN2023]. Additionally, these study areas provide vital habitats for numerous endemic wild animals, such as the Himalayan musk deer and Himalayan brown bears. Both the Chail Wildlife Sanctuary and Churdhar Wildlife Sanctuary are designated as Important Bird and Biodiversity Areas by BirdLife International [@Rahmani2016]. These areas are also home to some threatened bird species, including the Cheer Pheasant (*Catreus wallichii*), Himalayan Monal (*Lophophorus impejanus*), Indian Vulture (*Gyps indicus*), Koklass Pheasant (*Pucrasia macrolopha*), Red-headed Vulture (*Sarcogyps calvus*), and White-rumped Vulture (*Gyps bengalensis*).
 
 ## Data compilation
 
-We compiled a comprehensive species checklist for each site by integrating data collected from field surveys and relevant literature. The relevant studies were identified by searching [Google Scholar](https://scholar.google.co.in/) for its ability to retrieve the most obscure publications. The search was performed using the keywords "Morni," "Chail," and "Churdhar" in September 2021 and subsequently updated in August 2022. Then, we recorded all plant species reported in the identified studies for Morni Hills [@Balkrishna2018a; @Balkrishna2018b; @Dhiman2020; @Dhiman2021; @Singh2014], Chail Wildlife Sanctuary [@Bhardwaj2014; @Bhardwaj2017; @Kumar2013], and Churdhar Wildlife Sanctuary [@Choudhary2007; @Choudhary2012; @Gupta1998; @Radha2019; @Subramani2014; @Thakur2021a]. Each plant species record was manually standardised for its taxonomic name and botanical authority using the *Plants of the World Online* [@POWO2022]. Infra-specific taxa (variety and subspecies levels) were generally treated as species for the analysis to ensure consistency among the taxa. Each recorded plant species was further screened for distribution by matching with @POWO2022, and taxa with distribution outside the study sites were excluded. Finally, we updated all botanical names and their families by matching them with a static copy of the *World Checklist of Vascular Plants (WCVP)* version 10 dated 27 October 2022 [@Govaerts2021] using the `r packageVersion("rWCVP")` version of `rWCVP` package [@R-rWCVP].
+We compiled a comprehensive species checklist for each site by integrating data collected from field surveys and relevant literature. During 2021–2022, two to four field visits were conducted to each site in different seasons. The plant species encountered during the trek followed were recorded in the field notebook. Unknown plants were photographed because we were not permitted to sample plant due to legal protection of these sites. These plants were identified with the help of the herbarium (PAN) of the Panjab University, Chandigarh, and Janaki Ammal Herbarium (RRLH) of Indian Institute of Integrative Medicine, Jammu (<https://iiim.res.in/herbarium/index.htm>), and online database like eFlora of India (<https://efloraofindia.com/>) and Flowers of India (<http://www.flowersofindia.net/>). 
+
+To improve identification accuracy and complement our species list, the relevant studies were identified by searching [Google Scholar](https://scholar.google.co.in/) for its ability to retrieve the most obscure publications. The search was performed using the keywords "Morni," "Chail," and "Churdhar" in September 2021 and subsequently updated in August 2022. Then, we recorded all plant species reported in the identified studies for Morni Hills [@Balkrishna2018a; @Balkrishna2018b; @Dhiman2020; @Dhiman2021; @Singh2014], Chail Wildlife Sanctuary [@Bhardwaj2014; @Bhardwaj2017; @Kumar2013], and Churdhar Wildlife Sanctuary [@Choudhary2007; @Choudhary2012; @Gupta1998; @Radha2019; @Subramani2014; @Thakur2021a]. Each plant species record was manually standardised for its taxonomic name and botanical authority using the *Plants of the World Online* [@POWO2022]. Infra-specific taxa (variety and subspecies levels) were generally treated as species for the analysis to ensure consistency among the taxa. Each recorded plant species was further screened for distribution by matching with @POWO2022, and taxa with distribution outside the study sites were excluded. Finally, we updated all botanical names and their families by matching them with a static copy of the *World Checklist of Vascular Plants (WCVP)* version 10 dated 27 October 2022 [@Govaerts2021] using the `r packageVersion("rWCVP")` version of `rWCVP` package [@R-rWCVP].
 
 ```{r eval=FALSE}
 ## standardise plant names with WCVP
-# source("R/standardise_plant_names.R")
+# source("R/02_standardise-plant-names.R")
 ```
 
-We obtained the elevational distribution of our catalogued species from the *Database of Vascular Plants of Himalaya* published on [GBIF](https://www.gbif.org/) [@Rana2017; @Rana2019gbif]. This dataset assembled the elevational distribution of over 10,500 Himalayan plant species from the published floras [@Rana2017]. It compiled the elevational ranges of over 3,000 plant species reported from Himachal Pradesh from published floras [@Chowdhery1984; @Collett1902]. We downloaded this dataset on 28 July 2023 using the `rgbif` package version `r packageVersion("rgbif")` [@R-rgbif] and standardised the botanical names using the `rWCVP` package [@R-rWCVP]. After standardising plant names, this dataset provided elevational data for more than 1,000 plants in our checklist. Further, elevational data for some species was extracted from a separate study [@Rana2019ecs] and the remaining species with unavailable or uncertain elevational data were excluded. For duplicates, we considered the maximum upper limit and the minimum lower limit of the elevational range. We preferentially took the elevational distribution from Himachal Pradesh because our sites primarily fall within this Indian state. Finally, we adjusted the elevational limits of species distribution according to the full elevational extent of our study sites [@Colwell1994].
+We obtained the elevational distribution of our catalogued species from the *Database of Vascular Plants of Himalaya* [@Rana2017; @Rana2019gbif] published on the Global Biodiversity Information Facility ([GBIF](https://www.gbif.org/)). This dataset assembled the elevational distribution of over 10,500 Himalayan plant species from the published floras [@Rana2017]. It compiled the elevational ranges of over 3,000 plant species reported from Himachal Pradesh from published floras [@Chowdhery1984; @Collett1902]. We downloaded this dataset on 28 July 2023 using the `rgbif` package version `r packageVersion("rgbif")` [@R-rgbif] and standardised the botanical names using the `rWCVP` package [@R-rWCVP]. After standardising plant names, this dataset provided elevational data for more than 1,000 plants in our checklist. Further, elevational data for some species was extracted from a separate study [@Rana2019ecs] and the remaining species with unavailable or uncertain elevational data were excluded. For duplicates, we considered the maximum upper limit and the minimum lower limit of the elevational range. We preferentially taken the elevational distribution from Himachal Pradesh because our sites primarily fall within this Indian state. Finally, we adjusted the elevational limits of species distribution according to the full elevational extent of our study sites [@Colwell1994].
 
 ```{r eval=FALSE}
 ## get elevation range data
-# source("R/get_elevation_ranges.R")
+# source("R/03_get-elevation-ranges.R")
 ```
 
 
 ## Species richness
 
-We first resampled the elevation data to a 30 arc-sec (~1 km) resolution using bilinear interpolation to assess species richness at different elevations. The resampling was performed using the `terra` package version `r packageVersion("terra")` [@R-terra]. This process updated the elevational extents for our study sites: lower elevational gradient at Morni Hills (300--1300 m), intermediate elevational gradient at Chail WLS (900--2100 m), higher elevational gradient at Churdhar WLS (1600--3400 m), and the entire elevational gradient for All Sites (300--3400 m). Next, we divided each elevational gradient into 100-m elevational bands for each site. This approach of using 100-m elevational bands has been previously employed in studying elevational patterns of species richness in plants [@Li2022; @Qian2022; @Rana2019ecs]. Each elevational band is represented by its upper elevational limit, both in the text and figures. To estimate species richness for each elevational band, we used the range interpolation approach [@Colwell1994]. This method assumes range continuity so that each species can be found everywhere within its distribution range [@Grytnes2002]. Such range interpolation has been frequently used to study the elevational distribution of species richness [@Hu2017; @Manish2017; @Rana2019ecs]. While this approach may bias species richness estimation [@Hu2017], it is commonly employed to address sampling issues and ensure methodological consistency [@McCain2010; @Rana2019ecs]. In this study, we focused only on one-dimensional range interpolation as simple range-filling along elevational gradients. Following the range continuity, each species was assumed to exist in all elevational bands that entirely or partially covered its known range [@Grytnes2002; @Qian2022; @Rana2019ecs]. Species richness was then estimated by counting the total species within each 100-m elevational band. Thus, our calculated species richness represents the $\gamma$-diversity because it represents the total number of species present corresponding to the entire elevational band [@Lomolino2001].
+We first resampled the elevation data to a 30 arc-sec (~1 km) resolution using bilinear interpolation to assess species richness at different elevations. The resampling was performed using the `terra` package version `r packageVersion("terra")` [@R-terra]. This process updated the elevational extents for our study sites: lower elevational gradient at Morni Hills (300--1300 m), intermediate elevational gradient at Chail WLS (900--2100 m), higher elevational gradient at Churdhar WLS (1600--3400 m), and the entire elevational gradient for All Sites (300--3400 m). Next, we divided each elevational gradient into 100-m elevational bands for each site. This approach of using 100-m elevational bands has been previously employed in studying elevational patterns of species richness in plants [@Li2022; @Qian2022; @Rana2019ecs]. Each elevational band is represented by its upper elevational limit, both in the text and figures. To estimate species richness for each elevational band, we used the range interpolation approach [@Colwell1994]. This method assumes range continuity so that each species can be found everywhere within its distribution range [@Grytnes2002]. Such range interpolation has been frequently used to study the elevational distribution of species richness [@Hu2017; @Manish2021; @Rana2019ecs]. While this approach may bias species richness estimation [@Hu2017], it is commonly employed to address sampling issues and ensure methodological consistency [@McCain2010; @Rana2019ecs]. In this study, we focused only one-dimensional range interpolation as simple range-filling along elevational gradients. Following the range continuity, each species was assumed to exist in all elevational bands that entirely or partially covered its known range [@Grytnes2002; @Qian2022; @Rana2019ecs]. Species richness was then estimated by counting the total species within each 100-m elevational band. Thus, our calculated species richness represents the $\gamma$-diversity because it represents the total number of species present corresponding to the entire elevational band [@Lomolino2001].
 
 ```{r eval=FALSE}
 ## calculate species richness for each elevational band
-# source("R/calculate_richness.R")
+# source("R/04_calculate-richness.R")
 ```
 
 ## Explanatory variables
 
-We used four climatic variables: mean annual temperature (MAT), temperature seasonality (TSE), mean annual precipitation (MAP) and precipitation seasonality (PSE) to examine the influence of climate on plant species richness. These climatic variables have been suggested as major determinants of plant species richness at broader scales [@Kreft2007; @OBrien1993; @Qian2022; @Wang2009]. We extracted these climatic variables at 30-arc-sec (~1 km) resolution from the CHELSA (<https://chelsa-climate.org/>) database version 2.1 [@Karger2017]. Since this database is developed using statistical downscaling methods [@Karger2017], it is considered more suitable for modelling complex ecosystems like the Himalayas [@Maria2017; @Rana2019ecs]. Further, we used two energy variables, the net primary productivity (NPP) and soil organic carbon (SOC), to test the species--energy hypothesis [@Clarke2006; @Wang2022; @Wright1983]. The net primary productivity (NPP) estimated from the Miami model [@Lieth1973] was obtained from the CHELSA database. The mean value of soil organic carbon (SOC) for topsoil (0--5 cm) was downloaded at 250 m resolution from the SoilGrids database [@Hengl2017]. Furthermore, we used the actual evapotranspiration (AET), potential evapotranspiration (PET) and water deficit (WDF) as the variables representing the water--energy dynamics [@Currie1987; @OBrien1993; @Stephenson1990]. The AET [@Trabucco2019] and PET [@Zomer2022] data were obtained at 30-arc-sec (~1 km) resolution from the CGIAR-CSI database (<https://cgiarcsi.community/>). We calculated the water deficit (WDF) as the difference between the PET and AET [@Francis2003; @Stephenson1990]. Additionally, we used two metrics of environmental heterogeneity to test the heterogeneity--richness hypothesis [@Stein2014]. We obtained the median terrain ruggedness index (TRI) representing topographic heterogeneity [@Amatulli2018] and the EVI (enhanced vegetation index) homogeneity index (EHM) as a measure of vegetation heterogeneity [@Tuanmu2015] at 30-arc-sec (~1 km) from the EarthEnv database
-(<https://www.earthenv.org/>). Thus, we used a total of nine initial candidate explanatory variables consisting of four climatic (MAT, TSE, MAP and PSE), two energy (NPP and SOC), three water availability (AET, PET and WDF) and two environmental heterogeneity (EHM and TRI) variables. All the raster data of explanatory variables were resampled to 30-arc-sec (~1 km) resolution using the `resample()` function from the `terra` package [@R-terra]. Then, the mean value of each explanatory variable was calculated for each 100-m elevational band using the `zonal()` function from the `terra` package [@R-terra].
+We used four climatic variables mean annual temperature (MAT), temperature seasonality (TSE), mean total annual precipitation (MAP) and precipitation seasonality (PSE) to examine the influence of climate on plant species richness (@fig-hypo-sem). These climatic variables have been suggested as major determinants of plant species richness at broader scales [@Kreft2007; @OBrien1993; @Qian2022; @Wang2009]. We extracted these climatic variables at 30-arc-sec (~1 km) resolution from the CHELSA (<https://chelsa-climate.org/>) database version 2.1 [@Karger2017]. Since this database is developed using statistical downscaling methods [@Karger2017], it is considered more suitable for modelling complex ecosystems like the Himalayas [@Bobrowski2017; @Rana2019ecs]. Further, we used two energy variables, the net primary productivity (NPP) and soil organic carbon (SOC), to test the species--energy hypothesis [@Clarke2006; @Wang2022; @Wright1983]. The net primary productivity (NPP) estimated from the Miami model [@Lieth1973], was obtained from the CHELSA database. The mean value of soil organic carbon (SOC) for topsoil (0--5 cm) was downloaded at 250 m resolution from the SoilGrids database [@Hengl2017]. 
+
+We used the actual evapotranspiration (AET), potential evapotranspiration (PET) and water deficit (WDF) as the variables representing the water--energy dynamics [@Currie1987; @OBrien1993; @Stephenson1990]. The AET [@Trabucco2019] and PET [@Zomer2022] data were obtained at 30-arc-sec (~1 km) resolution from the CGIAR-CSI database (<https://cgiarcsi.community/>). We calculated the water deficit (WDF) as the difference between the PET and AET [@Francis2003; @Stephenson1990]. Additionally, we used two metrics of environmental heterogeneity to test the heterogeneity--richness hypothesis [@Stein2014]. We obtained the median terrain ruggedness index (TRI) representing topographic heterogeneity [@Amatulli2018] and the EVI (enhanced vegetation index) homogeneity index (EHM) as a measure of vegetation heterogeneity [@Tuanmu2015] at 30-arc-sec (~1 km) from the EarthEnv database
+(<https://www.earthenv.org/>). Thus, we used a total of 11 initial candidate explanatory variables consisting of four climatic (MAT, TSE, MAP and PSE), two energy (NPP and SOC), three water availability (AET, PET and WDF) and two environmental heterogeneity (EHM and TRI) variables (@fig-hypo-sem). All the raster data of explanatory variables were resampled to 30-arc-sec (~1 km) resolution using the `resample()` function from the `terra` package [@R-terra]. Then, the mean value of each explanatory variable was calculated for each 100-m elevational band using the `zonal()` function from the `terra` package [@R-terra]. The primary reason for calculating mean was to capture the average environmental conditions within each elevational band, thereby reducing the influence of variability in the explanatory variables. Further, this method allowed us to explore the determinants of species richness at a consistent elevational scale across our study sites.
 
 ```{r}
 ## calculate planar and 3d for each elevational band
-# source("R/extract_explanatory_variables.R")
+# source("R/05_extract-explanatory-variables.R")
 ```
 
 ## Data analysis
@@ -190,27 +229,27 @@ site_all <- read.csv("output/site_env.csv") |>
   mutate(across(!S, ~scale(.x)))
 ```
 
-Our primary aim was to investigate the potential determinants of plant species richness along the elevational gradients. We defined plant species richness as the number of unique species present within each 100-m elevational band. Given the discrete and non-negative nature of our response variable, we used the generalised linear model (GLM) by specifying the Poisson distribution with the log-link function [@Hilbe2014]. We used nine environmental variables representing climate, energy, heterogeneity and water availability as the potential predictors of plant species richness [@Cheng2023; @Kreft2007]. The potential evapotranspiration (PET) for Chail WLS was square-root transformed, whereas the water deficit (WDF) for full elevational gradient was log-transformed to remove the effect of extreme observations and skewness in data. All explanatory variables were standardised to have mean = 0 and standard deviation = 1 using the z-transformation. The estimated species richness (S) was regressed against each proposed explanatory variable, assuming the Poisson error distribution with the log-link function. This regression was implemented in `R` statistical environment version `r packageVersion("stats")` using the `glm()` function from the `stats` package version `r packageVersion("stats")` [@R-base]. The explanatory variable with the highest deviance-squared (D^2^) was considered the 'primary' explanatory variable [@Field2009; @Hawkins2003]. The deviance-squared (D^2^) for the explanatory variable was estimated using the @eq-glm-r2:
+Our primary aim was to investigate the potential determinants of plant species richness along the elevational gradients. We defined plant species richness as the number of unique species present within each 100-m elevational band. Given the discrete and non-negative nature of our response variable, we used the generalised linear model (GLM) by specifying the Poisson distribution with the log-link function [@Hilbe2014]. We used nine environmental variables representing climate, energy, heterogeneity and water availability as the potential predictors of plant species richness [@Cheng2023; @Kreft2007]. The potential evapotranspiration (PET) for Chail WLS was square-root transformed, whereas the water deficit (WDF) for full elevational gradient was log-transformed to remove the effect of extreme observations and skewness in data [@Legendre2012]. All explanatory variables were standardised to have mean = 0 and standard deviation = 1 using the z-transformation. The estimated species richness (S) was regressed against each proposed explanatory variable, assuming the Poisson error distribution with the log-link function. This regression was implemented in `R` statistical environment version `r packageVersion("stats")` using the `glm()` function from the `stats` package version `r packageVersion("stats")` [@R-base]. The explanatory variable with the highest deviance-squared (D^2^) was considered the 'primary' explanatory variable [@Field2009; @Hawkins2003]. The deviance-squared (D^2^) for the explanatory variable was estimated using the @eq-glm-r2:
 
 $$
 D^2 = \frac{D_{null} - D_{resid}}{D_{null}}; \quad 
 D^2_{adj} = 1 - \frac{(1-D^2) \times (n-1)}{n-k-1}
 $$ {#eq-glm-r2}
 
-where the $D_{null}$ represents the deviance of the null model (model with only an intercept) and the $D_{resid}$ represents the deviance of the model under study (model with explanatory variables). A higher value of deviance-squared indicates a model with a better fit. Further, we estimated the adjusted deviance-squared ($D^2_{adj}$) by correcting for the small sample size (@eq-glm-r2). Then, we computed Spearman's correlation coefficient ($\rho$) for the identified primary variable and all other remaining explanatory variables. The explanatory variables with an absolute Spearman's correlation coefficient of greater than 0.7 were considered correlated and excluded from further analysis [@Dormann2013]. The final set of uncorrelated explanatory variables was used for developing regression models.
+where the $D_{null}$ represents the deviance of the null model (model with only an intercept) and the $D_{resid}$ represents the deviance of the model under study (model with explanatory variables). A higher value of deviance-squared indicates a model with better fit. Further, we estimated the adjusted deviance-squared ($D^2_{adj}$) by applying a correction for the small sample size (@eq-glm-r2). Then, we computed Spearman's correlation coefficient ($\rho$) for the identified primary variable and all other remaining explanatory variables. The explanatory variables with an absolute Spearman's correlation coefficient of greater than 0.7 were considered correlated and excluded from further analysis [@Dormann2013]. The final set of uncorrelated explanatory variables was used for developing regression models.
 
-We build an initial full model consisting of species richness (S) as the response variable and all uncorrelated explanatory variables as predictor variables (@fig-correlation). The possible candidate models were identified using the `dredge()` function from the `MuMIn` package version `r packageVersion("MuMIn")` [@R-MuMIn]. The candidate models were compared using Akaike's Information Criterion (AIC) with a correction for the small sample size [@Burnham2002; @Hurvich1989]. The corrected Akaike's Information Criterion (AICc) was calculated using the @eq-aicc:
+We build an initial full model consisting of species richness (S) as the response variable and all uncorrelated explanatory variables as predictor variables (@suppfig-correlation). The possible candidate models were identified using the `dredge()` function from the `MuMIn` package version `r packageVersion("MuMIn")` [@R-MuMIn]. The candidate models were compared using the Akaike's Information Criterion (AIC) with a correction for the small sample size [@Burnham2002; @Hurvich1989]. The corrected Akaike's Information Criterion (AICc) was calculated using the @eq-aicc:
 
 $$
 AIC = -2 \mathcal{L} + 2k; \quad
 AICc = AIC + \frac{2k(k+1)}{n-k-1}
 $$ {#eq-aicc}
 
-where, $k$ is the number of parameters to be estimated by the model and $n$ is the total number of response observations in the model. We identified a top candidate model with the lowest AICc for each site (@tbl-mod-sel). This top candidate model was then compared with 15 previously proposed models of species richness (@tbl-richness-models). The model with the lowest AICc value was considered the best, and models with a difference of two AICc units were considered equally competitive [@Burnham2002]. We used model averaging if multiple models were identified as competitive. Since we aimed to investigate determinants of species richness, we used the full average instead of the conditional average [@Burnham2002]. The model averaging was implemented using the `model.avg()` function from the `MuMIn` package [@R-MuMIn].
+where, $k$ is the number of parameters to be estimated by the model and $n$ is the total number of response observations in the model. We identified a top candidate model with lowest AICc for each site. This top candidate model was then compared with 15 previously proposed models of species richness (@tbl-richness-models). The model with the lowest AICc value was considered the best, and models with a difference of two AICc units were considered equally competitive [@Burnham2002]. We used model averaging if multiple models were identified as competitive. Since we aimed to investigate determinants of species richness, we used the full average instead of the conditional average [@Burnham2002]. The model averaging was implemented using the `model.avg()` function from the `MuMIn` package [@R-MuMIn].
 
 ```{r}
 #| label: tbl-richness-models
-#| tbl-cap: Previously proposed models for explaining the variation in species richness (S). The predictor variables are abbreviated as AET, actual evapotranspiration; MAT, mean annual temperature; TSE, temperature seasonality; MAP, mean annual precipitation; ELE, elevation; NPP, net primary productivity; PET, potential evapotranspiration; TRI, terrain ruggedness index; and WDF, water deficit.
+#| tbl-cap: Previously proposed models for explaining the variation in species richness (S). The predictor variables are abbreviated as AET, actual evapotranspiration; MAT, mean annual temperature; TSE, temperature seasonality; MAP, mean total annual precipitation; ELE, elevation; NPP, net primary productivity; PET, potential evapotranspiration; TRI, terrain ruggedness index; and WDF, water deficit.
 
 rbind(
   c("@Currie1987",     "S ~ AET"),
@@ -253,7 +292,7 @@ $$
 AICc = C + \frac{2K \times n}{n - K - 1}
 $$ {#eq-sem-aicc}
 
-where $C$ is the Fisher's C statistic, $n$ is the total sample size and $K$ is the likelihood degrees of freedom. The strengths of each direct and indirect relationship were estimated if the model exhibited an adequate fit. If the model did not fit well, the non-significant paths were removed, and additional significant paths were added based on Shipley's d-sep test. The models exhibiting adequate fit were compared using the corrected Akaike's information criteria (AICc), and the model with the lowest AICc value was considered the best model (@eq-sem-aicc). Given the relatively small sample size (n < 20) for each individual site, the SEM was performed only for the entire elevation gradient (n = 31). All analyses were implemented in `R` statistical environment version `r packageVersion("stats")` [@R-base], and the package `tidyverse` version `r packageVersion("tidyverse")` was used for general data wrangling and visualisation [@R-tidyverse].
+where $C$ is the Fisher's C statistic, $n$ is the total sample size and $K$ is the likelihood degrees of freedom. The strengths of each direct and indirect relationship were estimated if the model exhibited an adequate fit. If the model did not fit well, the non-significant paths were removed, and additional significant paths were added based on Shipley's d-sep test. The models exhibiting adequate fit were compared using the corrected Akaike's information criteria (AICc), and model with the lowest AICc value was considered the best model (@eq-sem-aicc). Given the relatively small sample size (n < 20) for each individual site, the SEM was performed only for the entire elevation gradient (n = 31). All analyses were implemented in `R` statistical environment version `r packageVersion("stats")` [@R-base], and the package `tidyverse` version `r packageVersion("tidyverse")` was used for general data wrangling and visualisation [@R-tidyverse].
 
 # Results
 
@@ -319,6 +358,8 @@ ggpubr::ggarrange(
     bottom = text_grob("Elevation (m)", size = 14)
   )
 
+# ggsave("figs/fig3_richness.pdf", width = 7, height = 5)
+# ggsave("figs/fig3_richness.png", width = 7, height = 5)
 ```
 
 ## Primary variables
@@ -359,7 +400,7 @@ p.glm <- function(model){
 }
 ```
 
-The univariate models for Morni Hills suggested that water deficit (WDF) explained the highest deviance (D^2^ = 88.63%) in species richness (@tbl-primary-var). Further, Spearman's correlation coefficient suggested that WDF is weakly correlated with precipitation seasonality (PSE), EVI homogeneity (EHM), and actual evapotranspiration (AET). On the other hand, the terrain ruggedness index (TRI) appeared to be the most important predictor of species richness in Chail WLS (@tbl-primary-var). The Spearman's correlation coefficient indicated that mean annual precipitation (MAP), potential evapotranspiration (PET) and TRI had weak inter-correlation in Chail WLS (@fig-correlation). In the case of Churdhar WLS, AET explained the highest deviance in species richness (D^2^ = 94.59%). Five weakly correlated explanatory variables (AET, EHM, MAP, TRI and TSE) were selected for further modelling based on Spearman's correlation coefficient in Churdhar WLS. When All Sites were considered together, the net primary productivity (NPP) emerged as the important univariate predictor of species richness across the full elevational gradient (@tbl-primary-var). It explained about 46% of the total variation in species richness. EVI homogeneity (EHM) and terrain ruggedness index (TRI) were found as the other weakly correlated predictors. Overall, we found water deficit (WDF), terrain ruggedness index (TRI), actual evapotranspiration (AET) and net primary productivity (NPP) were the primary explanatory variables for lower (Morni Hills), intermediate (Chail WLS), upper (Churdhar WLS) and full elevational gradient (All Sites), respectively (@fig-primary-var). Across elevational gradient, species richness is apparently influenced by AET and WDF at higher and lower elevational gradients. The TRI was important at lower and intermediate elevations, whereas NPP was important for full elevational gradient (@fig-primary-var).
+Out of the initially proposed eleven explanatory variables, the univariate models suggested that water deficit (WDF) explained the highest deviance (D^2^ = 88.63%) for species richness in Morni Hills (@supptbl-primary-var). On the other hand, the terrain ruggedness index (TRI) appeared to be the most important predictor of species richness in Chail WLS (@supptbl-primary-var). In the case of Churdhar WLS, AET explained the highest deviance in species richness (D^2^ = 94.59%). When all sites are considered together, the net primary productivity (NPP) emerged as the important univariate predictor of species richness across the full elevational gradient (@supptbl-primary-var). It explained about 46% of the total variation in species richness. Water deficit (WDF), terrain ruggedness index (TRI), actual evapotranspiration (AET), and net primary productivity (NPP) were found to be the primary explanatory variables for lower (Morni Hills), intermediate (Chail WLS), upper (Churdhar WLS), and full elevational gradient (All Sites), respectively (@fig-primary-var).
 
 ```{r fig.width=7, fig.height=5}
 #| label: fig-primary-var
@@ -388,24 +429,27 @@ bind_rows(
 ) |>
   pivot_longer(cols = -Variable, names_to = "Site", values_to = "y") |>
   mutate(Site = factor(Site, c("Morni", "Chail", "Churdhar", "All"))) |>
+  
   ggplot(aes(x = Site, y = y, fill = Variable)) +
   geom_bar(stat = "identity", position = "dodge", width = 0.8) +
-  geom_text(aes(label = round(y, 1), color = Variable), 
-            position = position_dodge(0.85),
-            hjust = 0.5, vjust = -0.3, show.legend = FALSE) +
-  scale_color_brewer(palette = "Set2", direction = -1) +
-  scale_fill_brewer(palette  = "Set2", direction = -1) +
-  ylim(0, 110) +
-  labs(x = "Primary variable", y = expression(D^2~" (%)")) +
-  theme(legend.position = c(0.005, 0.99),
-        legend.justification = c(0, 1), 
+  geom_text(
+    aes(label = round(y, 1)), position = position_dodge(0.8),
+    size = 3.5, vjust = -0.35, show.legend = FALSE
+  ) +
+  scale_fill_brewer(palette = "OrRd") +
+  ylim(0, 115) +
+  labs(x = "", y = expression(D^2~" (%)")) +
+  theme(legend.position = c(0.995, 0.99),
+        legend.justification = c(1, 1), 
         legend.direction = "horizontal",
-        legend.title = element_blank(),
         legend.background = element_blank(),
-        legend.box.background = element_rect(color = "grey"),
-        axis.title.x = element_blank())
+        legend.box.background = element_rect(color = "grey", linewidth = 0.25))
+
+# ggsave("figs/fig4_primary-var.pdf", width = 7, height = 5, units = "in")
+# ggsave("figs/fig4_primary-var.png", width = 7, height = 5)
 ```
 
+The Spearman's correlation coefficient suggested that WDF is weakly correlated with PSE, EHM, and AET in Morni Hills (@suppfig-correlation a). Similarly, Spearman's correlation coefficient indicated that MAP, PET and TRI had weak inter-correlation in Chail WLS (@suppfig-correlation b). For Churdhar WLS, five weakly correlated explanatory variables (AET, EHM, MAP, TRI, and TSE) were selected for further modelling based on Spearman's correlation coefficient (@suppfig-correlation c). Across the entire elevational gradient, only EHM and TRI were found as the other weakly correlated predictors (@suppfig-correlation d). Out of the initially proposed eleven explanatory variables, only three environmental variables were found to be uncorrelated for Chail WLS and All Sites, while four variables were uncorrelated for Morni Hills and five for Churdhar WLS (@suppfig-correlation).
 
 ## Richness models
 
@@ -416,14 +460,14 @@ bmod_morni <- glm(S ~ AET + WDF, family = "poisson", data = site_morni)
 bmod_chail <- glm(S ~ TRI, family = "poisson", data = site_chail)
 ```
 
-The top model identified for Morni Hills included actual evapotranspiration (AET) and water deficit (WDF) as predictors (@tbl-mod-sel). This model exhibited an overall good fit (deviance = `r round(bmod_morni$deviance, 2)`, *df* = `r bmod_morni$df.residual`, *p* `r p.glm(bmod_morni)`) and explained `r round(d2.adj(bmod_morni), 2)`% of the total variation in species richness. The bivariate model with AET and WDF for Morni Hills performs better than most of the previously proposed models of plant species richness (@tbl-mod-comp). This model is jointly the best among the considered 15 previously proposed models for species richness. The model describing a quadratic relationship with potential evapotranspiration (PET) had slightly better AICc (&Delta;AICc = 0.01). In Chail WLS, the terrain ruggedness index (TRI) was included in the top model (@tbl-mod-sel). The model exhibited an overall good fit (deviance = `r round(bmod_chail$deviance, 2)`, *df* = `r bmod_chail$df.residual`, *p* `r p.glm(bmod_chail)`) and explained `r round(d2.adj(bmod_chail), 2)`% of the total variation in species richness. While this univariate model with TRI performed better than many previously proposed models of plant species richness,  water--energy dynamics models were better fitted to species richness in Chail WLS (@tbl-mod-comp). The best model suggested a quadratic relationship between species richness and potential evapotranspiration in Chail WLS and it was better than our univariate top model with TRI (&Delta;AICc = 3.92).
+The top model identified for Morni Hills included actual evapotranspiration (AET) and water deficit (WDF) as predictors (@supptbl-mod-sel). This model exhibited an overall good fit (deviance = `r round(bmod_morni$deviance, 2)`, *df* = `r bmod_morni$df.residual`, *p* `r p.glm(bmod_morni)`) and explained `r round(d2.adj(bmod_morni), 2)`% of the total variation in species richness. The bivariate model with AET and WDF for Morni Hills performs better than most of the previously proposed models of plant species richness (@tbl-mod-comp). This model is jointly the best among the considered 15 previously proposed models for species richness. The model describing a quadratic relationship with potential evapotranspiration (PET) had slightly better AICc (&Delta;AICc = 0.01). In Chail WLS, the terrain ruggedness index (TRI) was included in the top model (@supptbl-mod-sel). The model exhibited an overall good fit (deviance = `r round(bmod_chail$deviance, 2)`, *df* = `r bmod_chail$df.residual`, *p* `r p.glm(bmod_chail)`) and explained `r round(d2.adj(bmod_chail), 2)`% of the total variation in species richness. While this univariate model with TRI performed better than many previously proposed models of plant species richness,  water--energy dynamics models were better fitted to species richness in Chail WLS (@tbl-mod-comp). The best model suggested a quadratic relationship between species richness and potential evapotranspiration in Chail WLS and it was better than our univariate top model with TRI (&Delta;AICc = 3.82).
 
 ```{r}
 #| label: tbl-mod-comp
-#| tbl-cap: Comparison of the top model (shown in bold) with previously proposed models for determinants of species richness. The table shows the log-likelihood (logLik), corrected Akaike's Information Criteria (AICc), the difference in AICc (&Delta;AICc) and adjusted deviance-squared (D^2^~adj~) for each model. The difference in AICc was calculated against the top model (shown in bold) and negative values indicate a better model. Only models with a difference of two AICc units from the top model are presented for each site. Each model represents a generalised linear model (GLM) with Poisson distribution and the log-link function. The response variable was species richness (S). The predictor variables were actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), elevation (ELE), mean annual precipitation (MAP), mean annual temperature (MAT), potential evapotranspiration (PET), precipitation seasonality (PSE), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF). 
+#| tbl-cap: Comparison of the top model (shown in bold) with previously proposed models for determinants of species richness. The table shows the log-likelihood (logLik), corrected Akaike's Information Criteria (AICc), the difference in AICc (&Delta;AICc) and adjusted deviance-squared (D^2^~adj~) for each model. The difference in AICc was calculated against the top model (shown in bold) and negative values indicate a better model. Only models with a difference of two AICc units from the top model are presented for each site. Each model represents a generalised linear model (GLM) with Poisson distribution and the log-link function. The response variable was species richness (S). The predictor variables were actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), elevation (ELE), mean total annual precipitation (MAP), mean annual temperature (MAT), potential evapotranspiration (PET), precipitation seasonality (PSE), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF). 
 
 ## compare top model with previous models
-# source("R/compare_top_model.R")
+# source("R/06_compare-top-model.R")
 
 read.csv("output/top_mod_comparison.csv") |>
   filter(daicc < 2) |>
@@ -448,9 +492,9 @@ bmod_all2 <- glm(S ~ WDF + MAT + WDF:MAT, family = "poisson", data = site_all)
 # car::vif(bmod_all1)
 ```
 
-The top model for Churdhar WLS included actual evapotranspiration (AET) and mean annual precipitation (MAP) as potential predictors of species richness (@tbl-mod-sel). The model exhibited an overall good fit (deviance = `r round(bmod_churdhar$deviance, 2)`, *df* = `r bmod_churdhar$df.residual`, *p* `r p.glm(bmod_churdhar)`) and explained `r round(d2.adj(bmod_churdhar), 2)`% of the total variation in species richness for Churdhar WLS. This bivariate model with AET and MAP was better than all of the considered previous models of plant species richness (@tbl-mod-comp), and all other models differed from this model by at least four AICc units. When the full elevational gradient (All Sites) was considered, all three uncorrelated predictors, i.e., enhanced vegetation index homogeneity (EHM), net primary productivity (NPP) and terrain ruggedness index (TRI), were included in the top model (@tbl-mod-sel). Although this model explained `r round(d2.adj(bmod_all), 2)`% deviance in species richness, it did not exhibit an overall good fit (deviance = `r round(bmod_all$deviance, 2)`, *df* = `r bmod_all$df.residual`, *p* `r p.glm(bmod_all)`). However, some models outperformed this top model (&Delta;AICc = 40.27 to 192.73), though this model performed better than many previously proposed models (@tbl-mod-comp). The model with the lowest AICc included WDF and quadratic terms of PET and explained about `r round(d2.adj(bmod_all1), 2)`% deviance in species richness. This model also indicated an overall good fit (deviance = `r round(bmod_all1$deviance, 2)`, *df* = `r bmod_all1$df.residual`, *p* `r p.glm(bmod_all1)`). However, the WDF and PET were highly correlated ($\rho$ = 0.95) and showed high variance inflation factor (VIF > 7), and therefore, we inferred this model as biased and overfitted. The second best model included an interaction between WDF and MAT (@tbl-mod-comp). This model explained `r round(d2.adj(bmod_all2), 2)`% deviance in species richness and indicated an adequate fit to our data (deviance = `r round(bmod_all2$deviance, 2)`, *df* = `r bmod_all2$df.residual`, *p* `r p.glm(bmod_all2)`). Further, model diagnostics and validation did not indicate any potential deviations from model assumptions. Therefore, we considered this model as best fitted to our data. Among all compared species richness models (n = 19), the climate-richness models proposed by @Francis2003 explained the highest deviance in plant species richness patterns across all four elevational gradients (@tbl-mod-d2). Further, the water--energy dynamics model of @OBrien1993 was also equally good at explaining broad-scale patterns of plant species richness along elevational gradients. However, the model with topographic heterogeneity exhibited a good fit at lower and intermediate elevations but failed at higher elevations and full elevational gradient (@tbl-mod-d2).
+The top model for Churdhar WLS included actual evapotranspiration (AET) and mean total annual precipitation (MAP) as potential predictors of species richness (@supptbl-mod-sel). The model exhibited an overall good fit (deviance = `r round(bmod_churdhar$deviance, 2)`, *df* = `r bmod_churdhar$df.residual`, *p* `r p.glm(bmod_churdhar)`) and explained `r round(d2.adj(bmod_churdhar), 2)`% of the total variation in species richness for Churdhar WLS. This bivariate model with AET and MAP was better than all of the considered previous models of plant species richness (@tbl-mod-comp), and all other models differed from this model by at least four AICc units. When the full elevational gradient (All Sites) was considered, all three uncorrelated predictors, i.e., enhanced vegetation index homogeneity (EHM), net primary productivity (NPP) and terrain ruggedness index (TRI), were included in the top model (@supptbl-mod-sel). Although this model explained `r round(d2.adj(bmod_all), 2)`% deviance in species richness, it did not exhibit an overall good fit (deviance = `r round(bmod_all$deviance, 2)`, *df* = `r bmod_all$df.residual`, *p* `r p.glm(bmod_all)`). However, some models outperformed this top model (&Delta;AICc = 40.27 to 192.73), though this model performed better than many previously proposed models (@tbl-mod-comp). The model with the lowest AICc included WDF and quadratic terms of PET and explained about `r round(d2.adj(bmod_all1), 2)`% deviance in species richness. This model also indicated an overall good fit (deviance = `r round(bmod_all1$deviance, 2)`, *df* = `r bmod_all1$df.residual`, *p* `r p.glm(bmod_all1)`). However, the WDF and PET were highly correlated ($\rho$ = 0.95) and showed high variance inflation factor (VIF > 7), and therefore, we inferred this model as biased and overfitted. The second best model included an interaction between WDF and MAT (@tbl-mod-comp). This model explained `r round(d2.adj(bmod_all2), 2)`% deviance in species richness and indicated an adequate fit to our data (deviance = `r round(bmod_all2$deviance, 2)`, *df* = `r bmod_all2$df.residual`, *p* `r p.glm(bmod_all2)`). Further, model diagnostics and validation did not indicate any potential deviations from model assumptions. Therefore, we considered this model as best fitted to our data. Among all compared species richness models (n = 19), the climate-richness models proposed by @Francis2003 explained the highest deviance in plant species richness patterns across all four elevational gradients (@supptbl-mod-d2). Further, the water--energy dynamics model of @OBrien1993 was also equally good at explaining broad-scale patterns of plant species richness along elevational gradients. However, the model with topographic heterogeneity exhibited a good fit at lower and intermediate elevations, but failed at higher elevations and full elevational gradient (@supptbl-mod-d2).
 
-## Model comparison
+## Best model
 
 ```{r}
 
@@ -470,11 +514,11 @@ bmod_morni2 <- glm(S ~ PET + I(PET^2), family = "poisson", data = site_morni)
 #               method.args = list(family = "poisson"))
 ```
 
-The single best model for Morni Hills suggested a quadratic relationship between potential evapotranspiration (PET) and species richness (@tbl-mod-comp). This model exhibited an overall good fit (deviance = `r round(bmod_morni2$deviance, 2)`, *df* = `r bmod_morni2$df.residual`, *p* `r p.glm(bmod_morni2)`) and explained `r round(d2.adj(bmod_morni2), 2)`% of the total variation in species richness. Further, analysis of model residuals and diagnostics indicated that the model adequately fits our data (@fig-qqplot a, @fig-residual-plot a). Both linear and quadratic coefficients for potential evapotranspiration (PET) were negatively and significantly associated with species richness in Morni Hills (@tbl-bmod2). The linear term indicates species richness tends to decrease with an increase in PET. Specifically, for every unit increase in standard deviation (SD) of PET, species richness is expected to decrease by a factor of 0.75 (95% CI: 0.70--0.79) if all other factors remain constant. Further, the statistically significant quadratic term denotes the curvature of the relationship between species richness and PET. The negative coefficient of the quadratic term suggests the relationship may follow a concave pattern with an initial increase in species richness followed by a rapid decrease. Additionally, the confidence intervals for all predictors included zero, indicating little support for the effects of predictors on species richness in Morni Hills (@tbl-morni-avg).
+The single best model for Morni Hills suggested a quadratic relationship between potential evapotranspiration (PET) and species richness (@tbl-mod-comp). This model exhibited an overall good fit (deviance = `r round(bmod_morni2$deviance, 2)`, *df* = `r bmod_morni2$df.residual`, *p* `r p.glm(bmod_morni2)`) and explained `r round(d2.adj(bmod_morni2), 2)`% of the total variation in species richness. Further, analysis of model residuals and diagnostics indicated that the model adequately fits to our data (@suppfig-qqplot a, @suppfig-residual-plot a). Both linear and quadratic coefficients for potential evapotranspiration (PET) were negatively and significantly associated with species richness in Morni Hills (@tbl-bmod2). The linear term indicates species richness tends to decrease with an increase in PET. Specifically, for every unit increase in standard deviation (SD) of PET, species richness is expected to decrease by a factor of 0.75 (95% CI: 0.70--0.79) if all other factors remain constant. Further, the statistically significant quadratic term denotes the curvature of the relationship between species richness and PET. The negative coefficient of the quadratic term suggests the relationship may follow a concave pattern with an initial increase in species richness followed by a rapid decrease. Additionally, the confidence intervals for all predictors included zero, indicating little support for the effects of predictors on species richness in Morni Hills (@supptbl-morni-avg).
 
 ```{r}
 #| label: tbl-bmod2
-#| tbl-cap: Summary of the best Poisson GLM with log-link function for selected sites in the Western Himalayas. The species richness (S) was regressed against predictor variables, including actual evapotranspiration (AET), mean annual precipitation (MAP), mean annual temperature (MAT), potential evapotranspiration (PET) and water deficit (WDF). The interaction of water deficit (WDF) and mean annual temperature (MAT) was included for the full elevational gradient. The table displays the estimated regression coefficients (Estimate), standard errors (SE), z-value (Z) and p-values (p) for each regression coefficient in the model.
+#| tbl-cap: Summary of the best Poisson GLM with log-link function for selected sites in the Western Himalayas. The species richness (S) was regressed against predictor variables including actual evapotranspiration (AET), mean total annual precipitation (MAP), mean annual temperature (MAT), potential evapotranspiration (PET) and water deficit (WDF). The interaction of water deficit (WDF) and mean annual temperature (MAT) was included for full elevational gradient. The table displays the estimated regression coefficients (Estimate), standard errors (SE), z-value (Z) and p-values (p) for each regression coefficient in the model.
 
 bmod_morni2 <- glm(S ~ PET + I(PET^2), family = "poisson", data = site_morni)
 bmod_chail2 <- glm(S ~ PET + I(PET^2), family = "poisson", data = site_chail)
@@ -525,7 +569,7 @@ bind_rows(
 #               method.args = list(family = "poisson"))
 ```
 
-The best model for Chail WLS suggested a quadratic relationship between species richness and potential evapotranspiration (PET) in Chail WLS (@tbl-mod-comp). This model exhibited an overall good fit (deviance = `r round(bmod_chail2$deviance, 2)`, *df* = `r bmod_chail2$df.residual`, *p* `r p.glm(bmod_chail2)`) and explained `r round(d2.adj(bmod_chail2), 2)`% of the total variation in species richness. Further, analysis of model assumptions indicated no significant problems (@fig-qqplot b); however, model residuals suggested significant quantile deviations (@fig-residual-plot b). In contrast to Morni Hills, the coefficient for linear PET term ($\beta$ = −0.02, SE = 0.02) was not statistically significant (*p* = 0.352). This small negative coefficient for the linear term indicates that there will be little effect of PET on species richness if all other factors remain constant. However, the quadratic coefficient for PET was found to be negatively and significantly associated with species richness (@tbl-bmod2). This negative coefficient suggests that the relationship between species richness and PET follows a concave pattern, though the magnitude of curvature was lower than the Morni Hills. Taken together, these coefficient suggests an unimodal relationship between species richness and PET with a peak at intermediate levels of PET.
+The best model for Chail WLS suggested a quadratic relationship between species richness and potential evapotranspiration (PET) in Chail WLS (@tbl-mod-comp). This model exhibited an overall good fit (deviance = `r round(bmod_chail2$deviance, 2)`, *df* = `r bmod_chail2$df.residual`, *p* `r p.glm(bmod_chail2)`) and explained `r round(d2.adj(bmod_chail2), 2)`% of the total variation in species richness. Further, analysis of model assumptions indicated no significant problems (@suppfig-qqplot b), however, model residuals suggested significant quantile deviations (@suppfig-residual-plot b). In contrast to Morni Hills, the coefficient for linear PET term ($\beta$ = −0.02, SE = 0.02) was not statistically significant (*p* = 0.317). This small negative coefficient for linear term indicates that there will be little effects of PET on species richness if all other factors remain constant. However, the quadratic coefficient for PET was found to be negatively and significantly associated with species richness (@tbl-bmod2). This negative coefficient suggests that the relationship between species richness and PET follows a concave pattern, though the magnitude of curvature was lower than the Morni Hills. Taken together, these coefficient suggests a unimodal relationship between species richness and PET with a peak at intermediate levels of PET.
 
 ```{r}
 # ## coefficient interpretation
@@ -535,7 +579,7 @@ The best model for Chail WLS suggested a quadratic relationship between species 
 # )
 ```
 
-Our top model identified for Churdhar WLS was the best model among all 15 models (@tbl-mod-comp). This bivariate model with actual evapotranspiration (AET) and mean annual precipitation (MAP) exhibited an overall good fit (deviance = `r round(bmod_churdhar$deviance, 2)`, *df* = `r bmod_churdhar$df.residual`, *p* `r p.glm(bmod_churdhar)`). It explained `r round(d2.adj(bmod_churdhar), 2)`% of the total variation in species richness for Churdhar WLS. Further, model residuals and diagnostics analysis indicated that the model adequately fitted our data (@fig-qqplot c, @fig-residual-plot c). This model suggested that AET ($\beta$ = 0.42, SE = 0.02) was positively and significantly (*p* < 0.001) associated, whereas MAP ($\beta$ = −0.09, SE = 0.01) was negatively and significantly (*p* < 0.001) with species richness in Churdhar WLS (@tbl-bmod2). Specifically, this model suggests that for every unit increase in SD of AET, species richness is expected to increase by a factor of 1.52 (95% CI: 1.48--1.57). Similarly, for every one-unit increase in MAP, species richness is expected to decrease by a factor of 0.91 (95% CI: 0.89--0.94). 
+Our top model identified for Churdhar WLS was the best model among all 15 models (@tbl-mod-comp). This bivariate model with actual evapotranspiration (AET) and mean total annual precipitation (MAP) exhibited an overall good fit (deviance = `r round(bmod_churdhar$deviance, 2)`, *df* = `r bmod_churdhar$df.residual`, *p* `r p.glm(bmod_churdhar)`). It explained `r round(d2.adj(bmod_churdhar), 2)`% of the total variation in species richness for Churdhar WLS. Further, model residuals and diagnostics analysis indicated that the model adequately fitted our data (@suppfig-qqplot c, @suppfig-residual-plot c). This model suggested that AET ($\beta$ = 0.42, SE = 0.02) was positively and significantly (*p* < 0.001) associated, whereas MAP ($\beta$ = −0.09, SE = 0.01) was negatively and significantly (*p* < 0.001) with species richness in Churdhar WLS (@tbl-bmod2). Specifically, this model suggests that for every unit increase in SD of AET, species richness is expected to increase by a factor of 1.52 (95% CI: 1.48--1.57). Similarly, for every one-unit increase in MAP, species richness is expected to decrease by a factor of 0.91 (95% CI: 0.89--0.94). 
 
 ```{r}
 bmod_all2 <- glm(S ~ WDF + MAT + WDF:MAT, family = "poisson", data = site_all)
@@ -550,11 +594,11 @@ bmod_all2 <- glm(S ~ WDF + MAT + WDF:MAT, family = "poisson", data = site_all)
 #   as.data.frame()
 ```
 
-Across the full elevational gradient, the selected best model included water deficit (WDF), mean annual temperature (MAT) and their interaction (@tbl-mod-comp). This interaction model indicated a good fit to our data (deviance = `r round(bmod_all2$deviance, 2)`, *df* = `r bmod_all2$df.residual`, *p* `r p.glm(bmod_all2)`) and explained `r round(d2.adj(bmod_all2), 2)`% of the total variation in species richness. Further, model residuals and diagnostics analysis also indicated no potential problems (@fig-qqplot d, @fig-residual-plot d). The significant negative coefficient for WDF (@tbl-bmod2) suggests that the species richness is expected to decrease by 7% (95% CI: 2--13) for every unit increase in SD of WDF if MAT is held constant. Similarly, the significant positive coefficient for MAT indicated that for every unit increase in SD of MAT, the species richness is expected to increase by 22% (95% CI: 15--29) if WDF is held constant. The statistically significant coefficient for interaction between WDF and MAT (@tbl-bmod2) suggests that the effect of water deficit (WDF) on the species richness depends on the levels of mean annual temperature (MAT). The effect of water deficit on species richness decreases by 43% (95% CI: 42--45) for every unit increase of SD in mean annual temperature (@tbl-bmod2). We plotted the species richness against water deficit (WDF) with four temperature levels to visualise this interaction. The plot showed that the effect of WDF on species richness was stronger at lower temperatures as compared to higher temperatures. With increasing levels of water deficit, the species richness tended to increase at lower temperatures, whereas it tended to decrease at higher temperatures (@fig-intrplot-all).
+Across the full elevational gradient, the selected best model included water deficit (WDF), mean annual temperature (MAT) and their interaction (@tbl-mod-comp). This interaction model indicated a good fit to our data (deviance = `r round(bmod_all2$deviance, 2)`, *df* = `r bmod_all2$df.residual`, *p* `r p.glm(bmod_all2)`) and explained `r round(d2.adj(bmod_all2), 2)`% of the total variation in species richness. Further, model residuals and diagnostics analysis also indicated no potential problems (@suppfig-qqplot d, @suppfig-residual-plot d). The significant negative coefficient for WDF (@tbl-bmod2) suggests that the species richness is expected to decrease by 7% (95% CI: 2--13) for every unit increase in SD of WDF if MAT is held constant. Similarly, the significant positive coefficient for MAT indicated that for every unit increase in SD of MAT, the species richness is expected to increase by 22% (95% CI: 15--29) if WDF is held constant. The statistically significant coefficient for interaction between WDF and MAT (@tbl-bmod2), suggests that the effect of water deficit (WDF) on the species richness depends on the levels of mean annual temperature (MAT). The effect of water deficit on species richness decreases by 43% (95% CI: 42--45) for every unit increase of SD in mean annual temperature (@tbl-bmod2). We plotted the species richness against water deficit (WDF) with four temperature levels to visualise this interaction. The plot showed that the effect of WDF on species richness was stronger at lower temperatures as compared to higher temperatures. With increasing levels of water deficit, the species richness tended to increase at lower temperatures, whereas it tended to decrease at higher temperatures (@fig-intrplot-all).
 
 ```{r fig.width=7, fig.height=5}
 #| label: fig-intrplot-all
-#| fig-cap: Interaction plot showing the effect of water deficit (WDF) on plant species richness at different levels of mean annual temperature (MAT) for the full elevational gradient. The temperature levels were defined as cold (less than 10&deg;C), cool (between 10&deg;C to 15&deg;C), warm (between 15&deg;C to 20&deg;C) and hot (more than 20&deg;C). The smooth line was fitted using a Poisson generalised linear model (GLM) with a log-link function and the 95% confidence interval is represented as shades around the predicted smooth lines.
+#| fig-cap: Interaction plot showing the effect of water deficit (WDF) on plant species richness at different levels of mean annual temperature (MAT) for the full elevational gradient. The temperature levels were defined as cold (less than 10&deg;C), cool (between 10&deg;C to 15&deg;C), warm (between 15&deg;C to 20&deg;C) and hot (more than 20&deg;C). The smooth line was fitted using a Poisson generalised linear model (GLM) with log-link function and the 95% confidence interval is represented as shades around the predicted smooth lines.
 
 pal_temp <- c("Cold" = "#2c7bb6", "Cool" = "#abd9e9", 
               "Warm" = "#fdae61", "Hot"  = "#d7191c")
@@ -585,10 +629,13 @@ read.csv("output/site_env.csv") |>
         #legend.direction = "horizontal", 
         legend.title = element_text(size = 12),
         legend.background = element_rect(fill = NA), 
-        axis.title = element_text(colour = "black")) 
+        axis.title = element_text(colour = "black"))
+
+# ggsave("figs/fig5_interaction.pdf", width = 7, height = 5)
+# ggsave("figs/fig5_interaction.png", width = 7, height = 5)
 ```
 
-## Richness determinants
+## Richness mechanisms
 
 ```{r}
 
@@ -614,7 +661,7 @@ bmod_sem <- psem(
 )
 ```
 
-The identified best SEM model included climatic variables (MAT TSE, MAP, PSE and MAT&times;MAP), net primary productivity (NPP) as the energy variable and potential evapotranspiration (PET) representing water--energy dynamics (@tbl-sem-mods). This model for the species richness showed an overall good fit to the observed data as indicated by the Fisher's C statistic (*C* = 13.59, *df* = 8, *p* = 0.093) and also by the Chi-square goodness-of-fit test ($\chi^2$ = 9.11, *df* = 4, *p* = 0.058). These goodness-of-fit tests indicate that we fail to reject the null hypothesis, i.e., there are no significant differences between the proposed model and observed data. In other words, our data adequately represent the proposed hypothetical causal model. The best path model revealed that the mean annual temperature (MAT), mean annual precipitation (MAP), interaction between MAT and MAP (MAT&times;MAP), precipitation seasonality (PSE), net primary productivity (NPP) and potential evapotranspiration (PET) directly regulate the species richness across the entire elevational gradient (@fig-sem). On the other hand, mean annual temperature (MAT), temperature seasonality (TSE), mean annual precipitation (MAP) and precipitation seasonality (PSE) indirectly affect the species richness. Among the climate variables, MAT, MAP and PSE have direct and indirect effects on the species richness, whereas TSE has indirect effects on species richness. Further, the effect of climatic variables appears to be mediated by net primary productivity, potential evapotranspiration and an interaction between mean annual temperature and mean annual precipitation (@fig-sem).
+The identified best SEM model included climatic variables (MAT, TSE, MAP, PSE and MAT&times;MAP), net primary productivity (NPP) as the energy variable and potential evapotranspiration (PET) representing water--energy dynamics (@supptbl-sem-mods). This model for the species richness showed an overall good fit to the observed data as indicated by the Fisher's C statistic (*C* = 13.59, *df* = 8, *p* = 0.093) and also by the Chi-square goodness-of-fit test ($\chi^2$ = 9.11, *df* = 4, *p* = 0.058). These goodness-of-fit tests indicate that we fail to reject the null hypothesis, i.e., there are no significant differences between the proposed model and observed data. In other words, our data adequately represent the proposed hypothetical causal model. The best path model revealed that the mean annual temperature (MAT), mean total annual precipitation (MAP), interaction between MAT and MAP (MAT&times;MAP), precipitation seasonality (PSE), net primary productivity (NPP) and potential evapotranspiration (PET) directly regulate the species richness across the entire elevational gradient (@fig-sem). On the other hand, mean annual temperature (MAT), temperature seasonality (TSE), mean total annual precipitation (MAP) and precipitation seasonality (PSE) indirectly affect the species richness. Among the climate variables, MAT, MAP and PSE have direct and indirect effects on the species richness, whereas TSE has indirect effects on species richness. Further, the effect of climatic variables appears to be mediated by net primary productivity, potential evapotranspiration and an interaction between mean annual temperature and mean total annual precipitation (@fig-sem).
 
 ```{r}
 # ## function to scale
@@ -644,7 +691,7 @@ The identified best SEM model included climatic variables (MAT TSE, MAP, PSE and
 #   select(sempath)
 ```
 
-![Final path model illustrating the direct and indirect environmental determinants of plant species richness. The model highlights the direct and indirect effects of mean annual temperature (MAT), temperature seasonality (TSE), precipitation seasonality (PSE), mean annual precipitation (MAP), net primary productivity (NPP), the interaction between mean annual temperature and mean annual precipitation (MAT&times;MAP) and potential evapotranspiration (PET) on the species richness. The standardised path coefficients and associated significance level indicate the strength and direction of each relationship. Each path coefficient represents the expected change in the standard deviation of response with a one-unit standard deviation change in the predictor. Solid blue arrows represent the positive effects, whereas negative effects are represented by dashed brown arrows. The width of each arrow is proportional to the standardised path coefficients. The significance levels represented as `***`, `**` and `*` correspond to *p*-values of <0.001, <0.01 and <0.05, respectively. The goodness of fit was assessed using the chi-squared test and Shipley's test of directed separation based on Fisher's C statistic.](figs/bmod_sem){#fig-sem}
+![Final path model illustrating the direct and indirect environmental determinants of plant species richness. The model highlights the direct and indirect effects of mean annual temperature (MAT), temperature seasonality (TSE), precipitation seasonality (PSE), mean total annual precipitation (MAP), net primary productivity (NPP), the interaction between mean annual temperature and mean total annual precipitation (MAT&times;MAP) and potential evapotranspiration (PET) on the species richness. The standardised path coefficients and associated significance level indicate the strength and direction of each relationship. Each path coefficient represents the expected change in the standard deviation of response with a one-unit standard deviation change in the predictor. Solid blue arrows represent the positive effects, whereas negative effects are represented by dashed brown arrows. The width of each arrow is proportional to the standardised path coefficients. The significance levels represented as `***`, `**` and `*` correspond to *p*-values of <0.001, <0.01 and <0.05, respectively. The goodness of fit was assessed using the chi-squared test and Shipley's test of directed separation based on Fisher's C statistic.](figs/fig6_bmod-sem){#fig-sem}
 
 ```{r}
 # percent.effect <- function(coef.value, se){
@@ -656,19 +703,21 @@ The identified best SEM model included climatic variables (MAT TSE, MAP, PSE and
 # }
 # 
 # ## interpret coefficients
-# percent.effect(-1.08, 0.16) ## MAP
-# percent.effect(-1.65, 0.20) ## MAT
-# percent.effect(1.11, 0.13)  ## MAT*MAP
-# percent.effect(-0.77, 0.28) ## PET
-# percent.effect(0.40, 0.08)  ## NPP
-# percent.effect(0.14, 0.04)  ## PSE
+# rbind(
+#   MAP = percent.effect(-1.08, 0.16),    ## MAP
+#   MAT = percent.effect(-1.65, 0.20),    ## MAT
+#   MATMAP = percent.effect(1.11, 0.13),  ## MAT*MAP
+#   PET = percent.effect(-0.77, 0.28),    ## PET
+#   NPP = percent.effect(0.40, 0.08),     ## NPP
+#   PSE = percent.effect(0.14, 0.04)      ## PSE
+# )
 ```
 
-The path analysis revealed that the mean annual precipitation ($\beta$ = −1.08, *p* < 0.001) and the mean annual temperature ($\beta$ = −1.68, *p* < 0.001) had significant negative direct effects on species richness across the elevational gradient (@tbl-sem-coefs). These negative coefficients suggest that species richness is expected to decrease by 66% (95% CI: 53--75) for every unit increase in the standard deviation of MAT if all other variables are held constant. Similarly, for every unit increase in the standard deviation of MAP, the species richness is expected to decrease by 81% (95% CI: 71--87), holding all other variables constant. The significant positive coefficient for MAT&times;MAP interaction indicates that the effects of precipitation on species richness depend on temperature levels. With increased precipitation, the species richness tends to increase at higher temperatures (more than 15&deg;C) but decreases at lower temperatures (less than 15&deg;C). The significant positive magnitude ($\beta$ = 1.11, *p* < 0.001) of interaction coefficient suggests that the effect of MAP on species richness increases by 203% (95% CI: 134--293) for every unit increase in SD of mean annual temperature. Further, the PET had a significant negative direct effect, whereas NPP and PSE significantly positively affected species richness. The species richness is expected to decrease by 53.7% (95% CI: 19--73) for every unit increase in the SD of PET, holding other variables constant. Similarly, the species richness is expected to increase by 49% (95% CI: 27--75) for every unit increase in SD of NPP, whereas it increases by 15% (95% CI: 6--24) for every unit increase in SD of precipitation seasonality (@tbl-sem-coefs).
+The path analysis revealed that the mean total annual precipitation ($\beta$ = −1.08, *p* < 0.001) and the mean annual temperature ($\beta$ = −1.65, *p* < 0.001) had significant negative direct effects on species richness across the elevational gradient (@tbl-sem-coefs). These negative coefficients suggest that species richness is expected to decrease by 66% (95% CI: 53--75) for every unit increase in the standard deviation of MAP if all other variables held constant. Similarly, for every unit increase in the standard deviation of MAT, the species richness is expected to decrease by 81% (95% CI: 71--87), holding all other variables constant. The significant positive coefficient for MAT&times;MAP interaction indicate that the effects of precipitation on species richness depends on the temperature levels. With increased precipitation the species richness tends to increase at higher temperatures (more than 15&deg;C) but decreases at lower temperatures (less than 15&deg;C). The significant positive magnitude ($\beta$ = 1.11, *p* < 0.001) of interaction coefficient suggests that the effect of MAP on species richness increases by 203% (95% CI: 134--293) for every unit increase in SD of mean annual temperature. Further, the PET had a significant negative direct effect, whereas NPP and PSE significantly positively affected species richness. The species richness is expected to decrease by 53.7% (95% CI: 19--73) for every unit increase in the SD of PET, holding other variables constant. Similarly, the species richness is expected to increase by 49% (95% CI: 27--75) for every unit increase in SD of NPP, whereas it increases by 15% (95% CI: 6--24) for every unit increase in SD of precipitation seasonality (@tbl-sem-coefs).
 
 ```{r}
 #| label: tbl-sem-coefs
-#| tbl-cap: Summary of estimated path coefficients from structural equation modelling for species richness along the elevational gradient. The table displays the standardised path coefficient (Std.Estimate), unstandardised path coefficient (Estimate), standard error (SE), degrees of freedom (df), critical z-scores (Z), and p-values (p) for each path from independent (Predictor) to dependent (Response) variable in the model. The path coefficients represent the strength and direction of the relationships between variables. The standardised path coefficients (Std.Estimate) represent the expected change in the dependent variable as a function of the change in the independent variable in standard deviation (SD) units.
+#| tbl-cap: Summary of estimated path coefficients from structural equation modelling for species richness along the elevational gradient. The table displays the standardised path coefficient (Std.Estimate), unstandardised path coefficient (Estimate), standard error (SE), degrees of freedom (df), critical z-scores (Z), and p-values (p) for each path from independent (Predictor) to dependent (Response) variable in the model. The path coefficients represent the strength and direction of the relationships between variables. The standardised path coefficients (Std.Estimate) represent the expected change in dependent variable as a function of the change in independent variable in standard deviation (SD) units.
 
 bmod_sem |>
   coefs() |>
@@ -683,7 +732,7 @@ bmod_sem |>
   knitr::kable(align = c("l", "l", "r", "r", "r", "r", "r", "r"))
 ```
 
-In addition to direct effects, the mean annual precipitation (MAP), mean annual temperature (MAT), their interaction (MAT&times;MAP) and precipitation seasonality (PSE) influence species richness through their indirect effects mediated by NPP, PET and MAT&times;MAP (@fig-sem). These effects captured the influence of each variable on species richness mediated through other variables in the path model. The indirect effects of MAT on species richness are mediated through its significant negative influence on the NPP ($\gamma$ = −0.90, *p* < 0.001) and significant positive influence on MAT&times;MAP ($\gamma$ = 2.20, *p* < 0.001) and PET ($\gamma$ = 0.68, *p* < 0.001). Similarly, the indirect effects of MAP on species richness are mediated through its significant positive influence on the MAT&times;MAP ($\gamma$ = 0.67, *p* < 0.001) and significant negative influence on NPP ($\gamma$ = −1.44, *p* < 0.001) and PET ($\gamma$ = −0.23, *p* < 0.001). Further, the interaction between MAT and MAP (MAT&times;MAP) showed a significant indirect effect on species richness mediated through a strong positive influence on NPP ($\gamma$ = 1.02, *p* < 0.001). Similarly, the indirect effects of precipitation seasonality (PSE) on species richness are mediated through its significantly positive influence on PET ($\gamma$ = 0.06, *p* = 0.010) and significantly negative influence on MAT&times;MAP ($\gamma$ = −0.24, *p* = 0.022). Further, the temperature seasonality (TSE) indicated significant indirect effects on species richness that are mediated through NPP, PET and MAT&times;MAP (@fig-sem). The temperature seasonality indirectly affects the species richness through its significantly positive effect on PET ($\gamma$ = 0.05, *p* = 0.017) and significantly negative effect on NPP ($\gamma$ = −0.60, *p* < 0.001) and MAT&times;MAP ($\gamma$ = −0.50, *p* < 0.001). 
+In addition to direct effects, the mean total annual precipitation (MAP), mean annual temperature (MAT), their interaction (MAT&times;MAP) and precipitation seasonality (PSE) influence species richness through their indirect effects mediated by NPP, PET and MAT&times;MAP (@fig-sem). These effects captured the influence of each variable on species richness mediated through other variables in the path model. The indirect effects of MAT on species richness are mediated through its significant negative influence on the NPP ($\gamma$ = −0.90, *p* < 0.001) and significant positive influence on MAT&times;MAP ($\gamma$ = 2.20, *p* < 0.001) and PET ($\gamma$ = 0.68, *p* < 0.001). Similarly, the indirect effects of MAP on species richness are mediated through its significant positive influence on the MAT&times;MAP ($\gamma$ = 0.67, *p* < 0.001) and significant negative influence on NPP ($\gamma$ = −1.44, *p* < 0.001) and PET ($\gamma$ = −0.23, *p* < 0.001). Further, the interaction between MAT and MAP (MAT&times;MAP) showed a significant indirect effect on species richness mediated through a strong positive influence on NPP ($\gamma$ = 1.02, *p* < 0.001). Similarly, the indirect effects of precipitation seasonality (PSE) on species richness are mediated through its significantly positive influence on PET ($\gamma$ = 0.06, *p* = 0.010) and significantly negative influence on MAT&times;MAP ($\gamma$ = −0.24, *p* = 0.022). Further, the temperature seasonality (TSE) indicated significant indirect effects on species richness that are mediated through NPP, PET and MAT&times;MAP (@fig-sem). The temperature seasonality indirectly affects the species richness through its significantly positive effect on PET ($\gamma$ = 0.05, *p* = 0.017) and significantly negative effect on NPP ($\gamma$ = −0.60, *p* < 0.001) and MAT&times;MAP ($\gamma$ = −0.50, *p* < 0.001). 
 
 ```{r}
 ## function to calculate direct and indirect effects
@@ -716,7 +765,7 @@ calc.effs <- function(sem_mod, y){
 
 ```{r fig.width=7, fig.height=5}
 #| label: fig-sem-effects
-#| fig-cap: Direct and indirect effects of environmental variables on plant species richness. The effect estimates are derived from the standardised path coefficients and represent the expected change in the standard deviation of species richness as a function of a unit change in the standard deviation of the predictor variable.
+#| fig-cap: Direct and indirect effects of environmental variables on plant species richness. The effect estimates are derived from the standardised path coefficients and represent the expected change in the standard deviation of species richness as a function of unit change in the standard deviation of the predictor variable.
 
 
 bmod_sem |> 
@@ -737,39 +786,54 @@ bmod_sem |>
         legend.justification = c(1, 1),
         legend.background = element_rect(fill = NA),
         panel.grid = element_blank())
+
+# ggsave("figs/fig7_sem-effects.pdf", width = 7, height = 5)
+# ggsave("figs/fig7_sem-effects.png", width = 7, height = 5)
 ```
 
-The path analysis suggested that the climatic variables (MAT, MAP, MAT&times;MAP, and PSE), except temperature seasonality, showed both direct and indirect effects on species richness (@fig-sem-effects). The temperature seasonality indicated only indirect effects, whereas net primary productivity (NPP) and potential evapotranspiration (PET) depicted only direct effects on species richness. The NPP showed direct positive, whereas PET showed direct negative effects on species richness. However, the effects of PET are more substantial than the NPP. Further, mean annual temperature (MAT) had the strongest direct and indirect effects on species richness among all environmental variables. However, the total net effects are strongest for the interaction between MAT and MAP (2.04 + 0.75 = 2.79), followed by the mean annual precipitation (−1.97 + 0.63 = −1.34), precipitation seasonality (0.26 − 0.56 = 0.30) and mean annual temperature (−3.02 + 2.87 = −0.15). All climatic variables (MAT, TSE, MAP, and PSE) had a net negative effect on species richness, whereas the MAT&times;MAP interaction had a strong net positive effect on plant species richness (@fig-sem-effects).
+The path analysis suggested that the climatic variables, except temperature seasonality (TSE), showed both direct and indirect effects on species richness (@fig-sem-effects). The temperature seasonality indicated only indirect effects, whereas net primary productivity (NPP) and potential evapotranspiration (PET) depicted only direct effects on species richness. The NPP showed direct positive, whereas PET showed direct negative effects on species richness. However, the effects of PET are more substantial than the NPP. Further, mean annual temperature (MAT) had the strongest direct and indirect effects on species richness among all environmental variables. However, the total net effects are strongest for the interaction between MAT and MAP (2.04 + 0.75 = 2.79), followed by the mean total annual precipitation (−1.97 + 0.63 = −1.34), precipitation seasonality (0.26 − 0.56 = −0.30) and mean annual temperature (−3.02 + 2.87 = −0.15). All climatic variables (MAT, TSE, MAP, and PSE) had a net negative effect on species richness whereas the MAT&times;MAP interaction had a strong net positive effect on plant species richness (@fig-sem-effects).
 
 # Discussion
 
-We aimed to explore the determinants of plant species richness along elevational patterns. Specifically, this study sought to identify the primary environmental variable explaining variation in species richness for different elevational gradients. Additionally, we aimed to propose and compare species richness models for different elevational gradients. The final goal of this study was to understand the mechanisms underlying the variation in species richness across the entire elevational gradient. Our results suggested that the water deficit was important in Morni Hills at the lower elevational gradient, the terrain ruggedness index was important in Chail WLS at the intermediate elevational gradient, actual evapotranspiration was important in Churdhar WLS at the higher elevational gradient, and net primary productivity was important across the entire elevational gradient for explaining variation in plant species richness (Question 1). A univariate model with terrain ruggedness index was identified for intermediate elevational gradient, a bivariate model with actual evapotranspiration and water deficit was identified for lower elevational gradient, a bivariate model with actual evapotranspiration and mean annual precipitation was identified for higher elevational gradient, and the model for entire elevational gradient included net primary productivity, enhanced vegetation index homogeneity and terrain ruggedness index (Question 2). The identified model for higher elevational gradient performed best, whereas the model for lower elevational gradient was second best among the compared models (Question 3). All identified best models included climatic variables, mean annual temperature and mean annual precipitation, and water--energy dynamics variables actual evapotranspiration, potential evapotranspiration and water deficit. Further, our results highlighted that plant species richness is directly and indirectly influenced by climate, energy and water--energy dynamics across the elevational gradients (Question 4). Overall, our findings contribute to a better understanding of the determinants of plant species richness along elevational gradients.
+The present study aimed to explore the determinants of plant species richness along elevational patterns. Our results suggested that the water deficit (WDF) was important at the lower elevational gradient, the terrain ruggedness index (TRI) was important at the intermediate elevational gradient, actual evapotranspiration (AET) was important at the higher elevational gradient, and net primary productivity (NPP) was important across the entire elevational gradient for explaining variation in plant species richness (Question 1). A univariate model with TRI was identified for intermediate elevational gradient, a bivariate model with AET and WDF was identified for lower elevational gradient, a bivariate model with AET and mean total annual precipitation (MAP) was identified for higher elevational gradient, and the model for entire elevational gradient included NPP, enhanced vegetation index homogeneity (EHM) and TRI (Question 2). The identified model for higher elevational gradient performed best whereas the model for lower elevational gradient was second best among the compared models (Question 3). Further, our results highlighted that plant species richness is directly and indirectly influenced by climate, energy, and water–energy dynamics across the elevational gradients (Question 4). Overall, our findings contribute to a better understanding of the determinants of plant species richness along elevational gradients.
 
-The most important finding of the present study is the consistent relationship of species richness with climatic variables representing water--energy dynamics across different elevational gradients (@tbl-mod-d2). This observation is supported by our identified optimal models, which consistently incorporated water--energy dynamics variables such as actual evapotranspiration (AET), potential evapotranspiration (PET), and water deficit (WDF) alongside major climatic variables like mean annual temperature (MAT) and precipitation (MAP). While the variables measuring energy and water availability differed across elevational gradients, all models included variables representing energy and water availability. Since thermal energy determines the availability of liquid water, the variables representing an interaction between water and energy availability are important determinants of species richness [@OBrien2006; @Stephenson1990]. These environmental variables have also been previously suggested as major determinants of species richness [@Currie1987; @Francis2003; @OBrien1993; @Stephenson1990]. 
+The most important finding of the present study is the consistent relationship of species richness with climatic variables representing water--energy dynamics across different elevational gradients (@supptbl-mod-d2). While the variables measuring energy and water availability differed across elevational gradients, all models included variables representing energy and water availability. Since thermal energy determines the availability of liquid water, the variables representing an interaction between water--energy availability are important determinants of species richness [@OBrien2006; @Stephenson1990]. These environmental variables have also been previously suggested as major determinants of species richness [@Currie1987; @Francis2003; @OBrien1993; @Stephenson1990]. 
 
-Consistent with earlier studies [@OBrien1993; @Bhatta2021; @Vetaas2019], the PET exhibited a quadratic relationship with species richness at lower and intermediate elevational gradients. This relationship suggests that species richness is influenced by both linear and non-linear effects of evapotranspiration, indicating potentially complex ecological dynamics. With an increase in PET, the species richness initially increases to reach a maximum and then starts decreasing at higher values of PET. Since PET measures the amount of surface water loss under sufficient water availability, it represents a combination of thermal energy and water availability. Higher PET values indicate higher thermal energy leading to water scarcity, whereas lower PET values indicate lower thermal energy leading to water freezing [@OBrien2006]. Thus, optimal thermal energy and water availability combination support maximum species richness. This explanation also applies to the decreasing species richness at higher elevational gradients, which can attributed to water scarcity due to lower thermal energy. This observation aligns with previous studies highlighting the importance of water--energy dynamics in determining broad-scale species richness of plants [@Bhatta2021; @Thakur2022; @Tolmos2022; @Vetaas2019]. However, the interaction between thermal energy (mean annual temperature) and water availability (water deficit) was more important for determining species richness across the full elevational gradient. The relationship between species richness and temperature depends on the levels of water deficit levels. Similarly, the relationship between species richness and water deficit depended on the temperature levels. These observations agree with richness-climate models of species richness, as @Francis2003 described, highlighting the joint effects of energy and water availability. It appears that mean annual temperature becomes more important than the PET as a measure of environmental energy for determining species richness at larger scales [@Francis2003]. Thus, our results indicate that climate is consistently related to species richness across the elevational gradient. 
+Consistent with earlier studies [@OBrien1993; @Bhatta2021; @Vetaas2019], the potential evapotranspiration (PET) exhibited a quadratic relationship with species richness at lower and intermediate elevational gradients. This relationship suggests that species richness is influenced by both linear and non-linear effects of evapotranspiration, indicating potentially complex ecological dynamics. With an increase in PET, the species richness initially increases to reach a maximum and then starts decreasing at higher values of PET. Since PET measures the amount of surface water loss under sufficient water availability, it represents a combination of thermal energy and water availability. Higher PET values indicate higher thermal energy leading to water scarcity, whereas lower PET values indicate lower thermal energy leading to water freezing [@OBrien2006]. Thus, optimal thermal energy and water availability combination support maximum species richness. This explanation also applies to the decreasing species richness at higher elevational gradient, which can attributed to water scarcity due to lower thermal energy. This observation aligns with previous studies highlighting the importance of water--energy dynamics in determining broad-scale species richness of plants [@Bhatta2021; @Thakur2022; @Tolmos2022; @Vetaas2019]. However, the interaction between thermal energy (mean annual temperature) and water availability (water deficit) was more important for determining species richness across the full elevational gradient. The relationship between species richness and temperature depends on the levels of water deficit levels. Similarly, the relationship between species richness and water deficit depended on the temperature levels. These observations agree with richness-climate models of species richness, as @Francis2003 described, highlighting the joint effects of energy and water availability. It appears that mean annual temperature becomes more important than the PET as a measure of environmental energy for determining species richness at larger scales [@Francis2003]. Thus, our results indicate that climate is consistently related to species richness across the elevational gradient. 
 
-Our second important result highlights the direct and indirect effects of climatic variables on species richness across the full elevational gradient. Our analysis suggested species richness is shaped by both direct and indirect effects of climatic variables except temperature seasonality. However, the direct effects of climatic variables (MAT, MAP and MAT&times;MAP) were stronger than their indirect effects on species richness. This observation suggests that the climatic variables may regulate species richness by directly influencing the metabolism and physiology of organisms. Since more species can tolerate warm--wet climates, species richness is higher in warm--wet environments than in cold--dry climates [@Currie2004; @Hawkins2003]. The higher species richness at intermediate elevations (1300--1500 m) and the significant direct effects of climatic variables support the *climatic tolerance hypothesis* for broad-scale patterns of species richness. However, our results indicated little support for the *metabolic theory of ecology* as the direct effects of mean annual temperature were strongly negative on species richness [@Price2010; @Wang2009]. Contrary to the predictions of this theory, species richness decreased with increasing temperature in reduced water availability. Thus, the effects of temperature depended on the water availability. Therefore, it is unlikely that species richness is determined by temperature or precipitation separately.
+Our second important result highlights the direct and indirect effects of climatic variables on species richness across the full elevational gradient. Our analysis suggested species richness is shaped by both direct and indirect effects of climatic variables except temperature seasonality. However, the direct effects of climatic variables (MAT, MAP and MAT&times;MAP) were stronger than their indirect effects on species richness. This observation suggests that the climatic variables may regulate species richness by directly influencing the metabolism and physiology of organisms. Since more species can tolerate warm--wet climates, species richness is higher in warm--wet environments than the cold--dry climates [@Currie2004; @Hawkins2003]. The higher species richness at intermediate elevations (1300--1500 m) and the significant direct effects of climatic variables support the *climatic tolerance hypothesis* for broad-scale patterns of species richness. However, our results indicated little support for the *metabolic theory of ecology* as the direct effects of mean annual temperature were strongly negative on species richness [@Price2010; @Wang2009]. Contrary to the predictions of this theory, species richness decreased with increasing temperature in reduced water availability. Thus, the effects of temperature depended on the water availability. Therefore, it is unlikely that species richness is determined by temperature or precipitation separately.
 
-Climate can indirectly influence species richness by controlling the water--energy availability across the elevational gradients [@OBrien1993; @OBrien2006]. This observation is supported by the significant negative relationship between species richness and potential evapotranspiration (PET) found in this study. The high levels of thermal energy led to high potential evapotranspiration (PET), which reduces the availability of liquid water (drought). In contrast, low levels of thermal energy led to low PET, which also reduces the availability of liquid water (frozen water at higher elevations). Thus, our study supports the *water--energy dynamics hypothesis*, which posits that intermediate energy (thermal) levels result in higher water availability, which supports more species through biological activity [@OBrien1993; @OBrien2006]. This water--energy dynamics (WED) model has found support from recent studies on the elevational pattern of species for plants [@Bhatta2021; @Thakur2022; @Tolmos2022; @Vetaas2019]. 
+Climate can indirectly influence species richness by controlling the water--energy availability across the elevational gradients [@OBrien1993; @OBrien2006]. This observation is supported by the significant negative relationship between species richness and potential evapotranspiration (PET) found in this study. The high levels of thermal energy led to high potential evapotranspiration (PET), which reduces the availability of liquid water (drought). In contrast, low levels of thermal energy led to low PET, which also results in reduced availability of liquid water (frozen water at higher elevations). Thus, our study supports the *water--energy dynamics hypothesis*, which posits that intermediate energy (thermal) levels result in higher water availability, which supports more species through biological activity [@OBrien1993; @OBrien2006]. This water--energy dynamics (WED) model has found support from recent studies on the elevational pattern of species for plants [@Bhatta2021; @Thakur2022; @Tolmos2022; @Vetaas2019]. 
 
-Alternatively, climate can indirectly regulate species richness by influencing energy availability [@Currie2004; @Hawkins2003; @Jiang2022; @Wright1983]. We observed a direct positive relationship between species richness and net primary productivity (NPP) across the full elevational gradient. A positive relationship between species richness and energy variables like NPP has been previously observed across broad scales [@Bhatta2021; @Jiang2022]. One proposed mechanism to explain this species-energy relationship is the *more individuals hypothesis* [@Srivastava1998], which states that higher energy availability can support a greater number of individuals leading to higher number of species with viable population sizes. Thus, energy availability can maintain species richness by preventing extinction due to smaller population size [@Wright1983]. This explanation of species richness based on energy availability has sometimes been referred to as the *species-energy hypothesis* [@Wright1983]. Our results apparently support this hypothesis, though energy can control species richness through multiple mechanisms [@Evans2005]. However, the effects of NPP were weaker than the environmental variables representing joint effects of water--energy availability (@fig-sem-effects). This weak magnitude of NPP effects indicates that NPP is not a primary variable controlling species richness at larger scales. Thus, our findings align with earlier studies showing little evidence for this hypothesis [@Adler2011; @Gaston2000; @Storch2018]. 
+Alternatively, climate can indirectly regulate species richness by influencing energy availability [@Currie2004; @Hawkins2003; @Jiang2022; @Wright1983]. We observed a direct positive relationship between species richness and net primary productivity (NPP) across the full elevational gradient. A positive relationship between species richness and energy variables like NPP has been previously observed across broad scales [@Bhatta2021; @Jiang2022]. One proposed mechanism to explain this species-energy relationship is called the *more individuals hypothesis* [@Srivastava1998], which states that higher energy availability can support a greater number of individuals leading to higher number of species with viable population sizes. Thus, energy availability can maintain species richness by preventing extinction due to smaller population size [@Wright1983]. This explanation of species richness based on energy availability has sometimes been referred to as the *species-energy hypothesis* [@Wright1983]. Our results apparently support this hypothesis, though energy can control species richness through multiple mechanisms [@Evans2005]. However, the effects of NPP were weaker than the environmental variables representing joint effects of water--energy availability (@fig-sem-effects). This weak magnitude of NPP effects indicates that NPP is not a primary variable controlling species richness at larger scales. Thus, our findings align with earlier studies showing little evidence for this hypothesis [@Adler2011; @Gaston2000; @Storch2018]. 
 
-One notable finding of the present analysis is that environmental heterogeneity was not included in our identified models of species richness. Neither the vegetation heterogeneity (measured as enhanced vegetation index homogeneity) nor the topographic heterogeneity (measured as terrain ruggedness index) were significant for determining species richness along elevational gradients. Alternatively, these metrics may not be sufficient to capture the environmental heterogeneity, or these are correlated with climatic variables. Thus, our study did not indicate support for the *heterogeneity richness hypothesis*, which posits that regions with higher heterogeneity tend to have more species due to increased habitat diversity [@Stein2014]. However, the topographic heterogeneity seems to regulate species richness at intermediate elevational gradients where water and energy are sufficiently available. Overall, our results suggest that environmental heterogeneity may play an important role in regions where climatic conditions are optimised, but it can not be the sole predictor of species richness at larger scales. Consistent with previous observations [@Field2009], our study indicated that climatic factors are more important than environmental heterogeneity for species richness, at least in the case of plants.
+One notable finding of the present analysis is that environmental heterogeneity was not included in our identified models of species richness. We used enhanced vegetation index homogeneity index (EHM) to measure vegetation heterogeneity and terrain ruggedness index (TRI) to measure topographic heterogeneity. While both EHM and TRI generally increased with elevation, neither metric emerged as a significant predictor of species richness in our final models. These results suggest that the role of heterogeneity in shaping richness patterns depend on other factors. Alternatively, these metrics may not be sufficient to capture the environmental heterogeneity, or these are correlated with climatic variables. Thus, our study did not indicate support for the *heterogeneity richness hypothesis*, which posits that regions with higher heterogeneity tend to have more species due to increased habitat diversity [@Stein2014]. However, the topographic heterogeneity seems to regulate species richness at intermediate elevational gradients where water and energy are sufficiently available. Overall, our results suggest that environmental heterogeneity may play an important role in regions where climatic conditions are optimised, but it can not be the sole predictor of species richness at larger scales. Consistent with previous observations [@Field2009], our study indicated that climatic factors are more important than environmental heterogeneity for species richness, at least in the case of plants.
 
-Another considerable result of our study is that primary environmental variables influencing species richness varied along elevation gradients. This variation suggests that the determinants of species richness differ across elevational gradients, highlighting the importance of spatial scale for ecological processes. Such variation in primary environmental variables aligns with previous observations, suggesting that primary variables explaining species richness vary with spatial scale [@Field2009]. Our study indicated that energy (NPP), topographic heterogeneity (TRI) and water--energy dynamics (AET and WDF) were the primary environmental variables associated with species richness. These variables have been previously identified as the major environmental factors influencing plant species richness [@Hawkins2003; @Stein2014]. The water--energy dynamics appeared to be more important at lower and higher elevational gradients, whereas the topographic heterogeneity is important at intermediate elevational gradients. This observation suggests that liquid water availability is an important driver of plant species richness [@OBrien2006]. When the demand for liquid water is met (e.g., at intermediate elevations), topographic heterogeneity becomes an important determinant of plant species richness. Energy availability seemed to influence species richness across the full elevational gradient primarily. Thus, the influence of primary environmental factors depends on elevation, indicating the involvement of other factors in determining species richness.
+Our models indicated that energy (NPP), topographic heterogeneity (TRI), and water–energy dynamics (AET and WDF) were the primary environmental variables associated with species richness. These variables have been previously identified as the major environmental factors influencing plant species richness [@Hawkins2003; @Stein2014]. However, the importance of these variables varied with the extent and position of elevational gradients, highlighting the importance of spatial scale for ecological processes [@Field2009]. The water–energy dynamics appeared to be more important at lower and higher elevational gradients, whereas the topographic heterogeneity is important at intermediate elevational gradients. This observation suggests that liquid water availability is an important driver of plant species richness [@OBrien2006]. When the demand for liquid water is met (e.g., at intermediate elevations), topographic heterogeneity becomes an important determinant of plant species richness. Energy availability seemed to influence species richness across the full elevational gradient primarily. Thus, the influence of primary environmental factors can vary with the position and extent of the elevational gradients.
 
-While our study has global implications for understanding determinants of species richness at larger scales, it is not free from limitations. First, we used the range interpolation method to estimate species richness [@Grytnes2002], which has been criticised for its assumption of continuous species distribution within the geographical range and biased estimation of species richness [@Hu2017]. Second, the environmental predictors used in this study are secondarily derived using statistical algorithms and scaling [@Karger2017], which might not capture the actual environment in complex environments such as the Himalayan mountains. Third, the present study was based on the data compiled from the published flora, which can not be considered free from bias. Specifically, incomplete flora or biased estimation of distribution ranges can influence the observed patterns of species richness. Fourth, our dataset was specific to the vascular plants in selected sites of the Western Himalayas. Despite these known limitations, the range interpolation method and data from published floras have been used for exploring ecological and biogeographical patterns [@Bhatta2021; @Qian2022; @Rana2019ecs]. Overall, our findings highlight the importance of direct and indirect effects of climatic variables and our results agree well with the general climate-richness model proposed by @Francis2003 in determining species richness along elevational gradients. Future investigations should consider the field data with in-situ environmental variables across spatial scales to improve our understanding of the determinants and mechanisms underlying elevational patterns of species richness. Furthermore, we must be cautious while generalising these findings to other regions or ecosystems because ecological processes and mechanisms may vary with spatial-temporal scales.
+While our study has global implications for understanding determinants of species richness at larger scales, it is not free from limitations. First, we used the range interpolation method to estimate species richness [@Grytnes2002], which has been criticised for its assumption of continuous species distribution within the geographical range and biased estimation of species richness [@Hu2017]. Second, the environmental predictors used in this study are secondarily derived using statistical algorithms and scaling [@Karger2017], which might not capture the actual environment in complex environments such as Himalayan mountains. Third, the present study was based on the data compiled from the published flora, which can not be considered free from bias. Specifically, incomplete flora or biased estimation of distribution ranges can influence the observed patterns of species richness. Fourth, the results of this study can be biased because it did not considered the potential statistical non-independence and spatial autocorrelation introduced due to range interpolation and elevational gradient. Despite these known limitations, the range interpolation method and data from published floras have been used for exploring ecological and biogeographical patterns [@Bhatta2021; @Qian2022; @Rana2019ecs]. Overall, our findings highlight the importance of direct and indirect effects of climatic variables and our results agree well with the general climate-richness model proposed by @Francis2003 in determining species richness along elevational gradients. Future investigations should consider the field data with in-situ environmental variables across spatial scales to improve our understanding of the determinants and mechanisms underlying elevational patterns of species richness. Furthermore, we must be cautious while generalising these findings to other regions or ecosystems because ecological processes and mechanisms may vary with spatial-temporal scales.
 
-# Conclusion
+# Conclusions
 
-Among several proposed environmental factors, climatic factors combining energy and water availability are important determinants of plant species richness at broader spatial scales. Our findings highlight the direct and indirect effects of climatic variables on species richness, suggesting the synergistic effects of multiple variables on species richness patterns. While determinants of species richness may vary on different ecological scales, our study indicated an interplay of climatic, energy, and water-related variables as the primary determinant of species richness across elevational gradients. The significant effects of temperature, precipitation, net primary productivity, water deficit and potential evapotranspiration highlight the multifaceted nature of plant species richness patterns. The observed interaction effects emphasise the need to consider the synergistic effects of energy (heat) and water variables when studying the patterns and processes of plant species richness. These insights contribute to a more holistic understanding of the mechanisms shaping plant species richness in complex ecosystems like the Himalayas. Although our study sheds light on intricate relationships between environmental drivers and plant species richness along elevational gradients, further investigation is recommended to understand the underlying mechanisms driving this relationship.
+The present study revealed that climatic factors combining energy and water availability are important determinants of plant species richness at broader spatial scales. Our findings extend previous research by highlighting the direct, interaction, and indirect effects of climatic variables on species richness. While determinants of species richness may vary on different ecological scales, our study indicated an interplay of climatic, energy, and water-related variables as the primary determinant of species richness across elevational gradients. The significant effects of temperature, precipitation, net primary productivity, water deficit, and potential evapotranspiration highlight the multifaceted nature of plant species richness patterns. The observed interaction effects emphasise the need to consider the synergistic effects of energy (heat) and water variables when studying the patterns and processes of plant species richness. These insights contribute to a more holistic understanding of the mechanisms shaping plant species richness in complex ecosystems like the Himalayas. By unravelling the relationship between environmental factors and species richness, our study provides a foundation for developing strategies to conserve and manage the biodiversity in mountainous regions under global environmental change.
 
-# Acknowledgements {.unnumbered}
+# Abbreviations {.unnumbered}
 
-The authors are grateful to the Principal Chief Conservator of Forests (PCCF) of the Haryana Forest Department and the Himachal Pradesh Forest Department for kindly permitting them to visit the selected protected areas. We are also thankful to the Chairperson, Department of Botany, Panjab University, Chandigarh, for providing all the necessary facilities required for the work. We want to express our heartfelt gratitude to *Sabir Hussain*, *Alok Sharma*, *Kamal*, *Pravesh* for their invaluable assistance and support during the fieldwork phase of this research. Additionally, we appreciate the staff and authorities of the Forest Department of Himachal Pradesh, who facilitated the logistics and permits required for the fieldwork.
+**AET:** Actual Evapotranspiration; **AIC:** Akaike's Information Criteria; **AICc:** Corrected Akaike's Information Criteria; **EHM:** Enhanced Vegetation Index Homogeneity Index; **GBIF:** Global Biodiversity Information Facility; **GLM:** Generalised Linear Model; **MAP:** Mean Total Annual Precipitation; **MAT:** Mean Annual Temperature; **NPP:** Net Primary Productivity; **PET:** Potential Evapotranspiration; **POWO:** Plants of the World Online; **PSE:** Precipitation Seasonality; **S:** Species Richness; **SD:** Standard Deviation; **SE:** Standard Error; **SEM:** Structural Equation Modelling; **SOC:** Soil Organic Carbon; **TRI:** Terrain Ruggedness Index; **TSE:** Temperature Seasonality; **WCVP:** World Checklist of Vascular Plants; **WDF:** Water Deficit; **WED:** Water–Energy Dynamics; **WLS:** Wildlife Sanctuary
 
-# Author contributions {.unnumbered}
+# Declarations {.unnumbered}
+
+**Ethics approval and consent to participate** Not applicable
+
+**Consent for publication** Not applicable
+
+**Availability of data and material** The data and `R` codes that support the findings of this study are available from figshare repository <https://figshare.com/s/3728be3aa8153653da93>. We will publish to figshare with DOI after acceptance.
+
+**Competing interests** The authors declare that they have no competing interests
+
+**Funding** This work was supported by the University Grants Commission (UGC), Government of India, New Delhi in the form of Senior Research Fellowships to Abhishek Kumar [507/ (OBC) (CSIR-UGC NET DEC. 2016)], Meenu Patil [492/ (CSIR-UGC NET JUNE 2017)], and Pardeep Kumar [443/ (CSIR-UGC NET DEC. 2017)].
+
+**Authors' contributions** 
 
 ```{r eval=TRUE}
 auth.cont <- function(author){
@@ -783,26 +847,41 @@ auth.cont <- function(author){
 
 **Abhishek Kumar:** `r auth.cont("AK")`. **Meenu Patil:** `r auth.cont("MP")`. **Pardeep Kumar:** `r auth.cont("PK")`. **Anand Narain Singh:** `r auth.cont("ANS")`.
 
-# Conflict of interest {.unnumbered}
+**Acknowledgements** The authors are grateful to the Principal Chief Conservator of Forests (PCCF) of the Haryana Forest Department and the Himachal Pradesh Forest Department for kindly permitting them to visit the selected protected areas. We are also thankful to the Chairperson, Department of Botany, Panjab University, Chandigarh, for providing all the necessary facilities required for the work. We want to express our heartfelt gratitude to Sabir Hussain, Alok Sharma, Kamal Rana, Pravesh Bhardwaj, and Sukhveer Cheema for their invaluable assistance and support during the fieldwork phase of this research. Additionally, we appreciate the Forest Department of Himachal Pradesh staff and authorities, who facilitated the logistics and permits required for the fieldwork. We acknowledge the constructive feedback of two anonymous reviewers on our previous draft.
 
-The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
+\newpage
 
-# Data availability {.unnumbered}
-
-All data and `R` codes used in this research are currently available from <https://github.com/kumar-a/richness-determinants>. We will deposit it in a free, suitable repository like figshare or zenodo after acceptance.
-
-# Funding {.unnumbered}
-
-This work was supported by the University Grants Commission, Government of India, New Delhi is acknowledged for financial support in the form of Senior Research Fellowships to *Abhishek Kumar* [507/ (OBC) (CSIR-UGC NET DEC. 2016)], *Meenu Patil* [492/ (CSIR-UGC NET JUNE 2017)], and *Pardeep Kumar* [443/ (CSIR-UGC NET DEC. 2017)].
-
-
-# Supplementary tables {.unnumbered}
+# Supplementary Information {.unnumbered}
 
 ```{r}
-#| label: tbl-primary-var
-#| tbl-cap: Summary of primary variable selection for explaining species richness at lower (Morni), intermediate (Chail), higher (Churdhar) and full (All) elevational gradient. The species richness (S) was regressed against each explanatory variable using Poisson GLM with a log-link function. The values represent the estimated deviance-squared (D^2^) in percent units and higher values indicate a better model fit. The variables with maximum D^2^ values are highlighted with bold text.
+## prepare data for each site
+site_morni <- read.csv("output/site_env.csv") |>
+  filter(site == "Morni") |>
+  select(-site) |>
+  mutate(across(!S, ~scale(.x)))
+
+site_chail <- read.csv("output/site_env.csv") |>
+  filter(site == "Chail") |>
+  select(-site) |>
+  mutate(PET = sqrt(PET)) |>
+  mutate(across(!S, ~scale(.x)))
+
+site_churdhar <- read.csv("output/site_env.csv") |>
+  filter(site == "Churdhar") |>
+  select(-site) |>
+  mutate(across(!S, ~scale(.x)))
+
+site_all <- read.csv("output/site_env.csv") |>
+  filter(site == "All") |>
+  select(-site) |>
+  mutate(WDF = log(WDF)) |>
+  mutate(across(!S, ~scale(.x)))
+```
 
 
+:::{#supptbl-primary-var}
+
+```{r}
 ## function to find primary variable -----
 primary.var <- function(site_x){
     
@@ -829,13 +908,6 @@ primary.var <- function(site_x){
     do.call(dplyr::bind_rows, datalist)
 }
 
-## function to highlight max values
-highlight.max <- function(x){
-  ifelse(x == max(x),
-             yes = paste0("**", as.character(round(x, 2)), "**"),
-             no = as.character(round(x, 2)))
-}
-
 ## find primary variable
 primary.var(site_morni) |> 
   rename("Morni"    = d2) |>
@@ -849,21 +921,27 @@ primary.var(site_morni) |>
     primary.var(site_all) |> rename("All"      = d2)
   ) |>
   arrange(Variable) |>
-  mutate(across(
-    is.double, ~highlight.max(.x)
-  )) |>
-  mutate(
-    Variable = ifelse(Variable %in% c("AET", "NPP", "TRI", "WDF"),
-                      yes = paste0("**", Variable, "**"),
-                      no = Variable)
+  flextable() |>
+  colformat_double(digits = 2) |>
+  bold(~Morni == max(Morni), c(1, 2)) |>
+  bold(~Chail == max(Chail), c(1, 3)) |>
+  bold(~Churdhar == max(Churdhar), c(1, 4)) |>
+  bold(~All == max(All), c(1, 5)) |>
+  add_footer_lines(
+    as_paragraph("The species richness (S) was regressed against each explanatory variable using Poisson GLM with a log-link function. The values represent the estimated deviance-squared (D", as_sup('2'), ") in percent units and higher values indicate a better model fit. The variables with maximum D", as_sup('2'), " values are highlighted with bold text.")
   ) |>
-  knitr::kable(align = "lrrrr")
+  fontsize(size = 9, part = "footer") |>
+  flextable::width(width = 5.7/5)
 ```
 
-```{r}
-#| label: tbl-mod-sel
-#| tbl-cap: Results of model selection for exploring determinants of species richness in selected sites. The table shows the degrees of freedom (df), log-likelihood (logLik), corrected Akaike's Information Criteria (AICc), the difference in AICc from the top model (delta) and Akaike's model weight (weight) for each model. Only models with a difference of four AICc units from the top model are presented for each site. The species richness (S) was regressed against the predictor variables, including actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), mean annual precipitation (MAP), potential evapotranspiration (PET), precipitation seasonality (PSE), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF). Each model represents a generalised linear model (GLM) with Poisson distribution and the log-link function.
+Summary of primary variable selection for explaining species richness at lower (Morni), intermediate (Chail), higher (Churdhar) and full (All) elevational gradient. 
+:::
 
+\newpage
+
+:::{#supptbl-mod-sel}
+
+```{r}
 options(na.action = "na.fail")
 
 mods_morni <- glm(S ~ AET + PSE + EHM + WDF,
@@ -928,17 +1006,24 @@ bind_rows(
   mutate(mods_all,      Site = "All")
 ) |>
   relocate(Site) |>
-  mutate(across(
-    is.double, ~ round(.x, 2)
-  )) |>
-  knitr::kable()
+  flextable() |>
+  colformat_double(digits = 2) |>
+  add_footer_lines(
+    as_paragraph("The table shows the degrees of freedom (df), log-likelihood (logLik), corrected Akaike's Information Criteria (AICc), the difference in AICc from the top model (delta) and Akaike's model weight (weight) for each model. The species richness (S) was regressed against the predictor variables, including actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), mean annual precipitation (MAP), potential evapotranspiration (PET), precipitation seasonality (PSE), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF). Each model represents a generalised linear model (GLM) with Poisson distribution and the log-link function. Only models with a difference of four AICc units from the top model are presented for each site.")
+  ) |>
+  fontsize(size = 9, part = "footer") |>
+  # autofit() |>
+  flextable::width(width = c(0.8, 1.9, 0.6, 0.6, 0.6, 0.6, 0.6))
 ```
 
+Results of model selection for exploring determinants of species richness in selected sites.
+:::
+
+\newpage
+
+:::{#supptbl-mod-d2}
 
 ```{r}
-#| label: tbl-mod-d2
-#| tbl-cap: Explanatory power of species richness models for lower (Morni), intermediate (Chail), higher (Churdhar) and full (All) elevational gradient. The explanatory power of each model was evaluated using the adjusted deviance-squared (D^2^~adj~) in percent units and higher values indicate better model fit. The last column (Average) represents the mean values of adjusted deviance-squared (D^2^~adj~) across the four elevational gradients. The models were arranged according to their average explanatory power across elevational gradients. The species richness (S) was regressed against the predictor variables, including actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), elevation (ELE), mean annual precipitation (MAP), mean annual temperature (MAT), potential evapotranspiration (PET), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF). Each model represents a generalised linear model (GLM) with Poisson distribution and the log-link function.
-
 
 compare.richness.models <- function(site_x){
   
@@ -1003,19 +1088,27 @@ compare.richness.models(site_morni) |>
   left_join(
     compare.richness.models(site_all) |> rename("All" = d2.adj)
   ) |>
-  mutate(d2.avg = (Morni + Chail + Churdhar + All)/4) |>
-  mutate(across(
-    is.double, ~round(.x, 2)
-  )) |>
+  mutate(d2.avg = (Morni + Chail + Churdhar + All)/4,
+         Model = gsub("\\^2", "\\^2\\^", Model)) |>
   arrange(desc(d2.avg)) |>
   rename("Average" = d2.avg) |>
-  knitr::kable()
+  
+  flextable() |>
+  ftExtra::colformat_md(j = "Model") |>
+  colformat_double(digits = 2) |>
+  add_footer_lines(
+    as_paragraph("The explanatory power of each model was evaluated using the adjusted deviance-squared (D", as_sup('2'), as_sub('adj'), ") in percent units and higher values indicate better model fit. The last column (Average) represents the mean values of adjusted deviance-squared (D", as_sup('2'), as_sub('adj'), ") across the four elevational gradients. The models were arranged according to their average explanatory power across elevational gradients. The species richness (S) was regressed against the predictor variables, including actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), elevation (ELE), mean annual precipitation (MAP), mean annual temperature (MAT), potential evapotranspiration (PET), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF). Each model represents a generalised linear model (GLM) with Poisson distribution and the log-link function.")
+  ) |>
+  fontsize(size = 9, part = "footer") |>
+  flextable::width(width = c(2.7, rep(0.6, 5)))
 ```
 
+Explanatory power of species richness models for lower (Morni), intermediate (Chail), higher (Churdhar) and full (All) elevational gradient. 
+:::
+
+:::{#supptbl-morni-avg}
 
 ```{r}
-#| label: tbl-morni-avg
-#| tbl-cap: Summary of model averaging of competitive models (&Delta;AICc < 2) for Morni Hills. The table displays the estimated regression coefficients (Estimate), standard errors (SE), adjusted standard errors (SE.adj), z-scores (Z), p-values (p), 95% confidence intervals (2.5% and 97.5%) and the sum of Akaike's weight (SW) for each independent variable (Parameters) included in the competitive models. The adjusted SE incorporates model selection uncertainty, whereas standard SE considers sampling variance only. The sum of Akaike's weight (SW) indicates the relative importance of each predictor in the model. The parameter estimates are standardised effect sizes as the predictors have been standardised to have a mean of 0 and SD of 1. 
 
 ## competitive models
 m1 <- glm(S ~ PET + I(PET^2),  family = "poisson", data = site_morni)
@@ -1045,13 +1138,28 @@ summary(mod_avg_morni)$coefmat.full |>
   ) |>
 
   rename("SE" = `Std. Error`, "SE.adj" = `Adjusted SE`, 
-         "Z" = `z value`, "p" = `Pr(>|z|)`) |>
-  mutate(across(is.double & !p, ~round(.x, 2))) |>
-  mutate(p = ifelse(p < 1e-3, "<0.001", as.character(round(p, 3))),
-         Parameters = gsub("I\\(|\\(|\\)", "", Parameters)) |>
-  knitr::kable(align = c("l", "r", "r", "r", "r", "r", "r", "r", "r"))
+         "Z" = `z value`, "p" = `Pr(>|z|)`, 
+         "2.5%" = `2.5 %`, "97.5%" = `97.5 %`) |>
+  mutate(Parameters = gsub("I\\(|\\(|\\)", "", Parameters),
+         Parameters = gsub("\\^2", "\\^2\\^", Parameters)) |>
+  
+  flextable() |>
+  colformat_double(digits = 2, na_str = "NA") |>
+  colformat_double(j = 6, digits = 3) |>
+  ftExtra::colformat_md(j = "Parameters") |>
+  add_footer_lines(
+    as_paragraph("The table displays the estimated regression coefficients (Estimate), standard errors (SE), adjusted standard errors (SE.adj), z-scores (Z), p-values (p), 95% confidence intervals (2.5% and 97.5%) and the sum of Akaike's weight (SW) for each independent variable (Parameters) included in the competitive models. The adjusted SE incorporates model selection uncertainty, whereas standard SE considers sampling variance only. The sum of Akaike's weight (SW) indicates the relative importance of each predictor in the model. The parameter estimates are standardised effect sizes as the predictors have been standardised to have a mean of 0 and SD of 1.")
+  ) |>
+  fontsize(size = 9, part = "footer") |>
+  flextable::width(width = c(0.9, rep(0.6, 8)))
 ```
 
+Summary of model averaging of competitive models (&Delta;AICc < 2) for Morni Hills.
+:::
+
+\newpage
+
+:::{#supptbl-sem-mods}
 
 ```{r}
 library(piecewiseSEM)
@@ -1161,8 +1269,6 @@ smod_clim_pet_tri <- psem(
 ```
 
 ```{r}
-#| label: tbl-sem-mods
-#| tbl-cap: Results of model selection to identify the best SEM model for exploring determinants of species richness along elevational gradients. The table shows the Akaike's Information Criteria (AIC), likelihood degrees of freedom (K), number of observations (n) and corrected Akaike's Information Criteria (AICc) for each model evaluated. The species richness (S) was used as the endogenous variable. The exogenous variables included actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), mean annual precipitation (MAP), potential evapotranspiration (PET), precipitation seasonality (PSE), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF).
 
 fit.sem <- function(model){
   fisherC(model) |>
@@ -1184,20 +1290,45 @@ bind_rows(
   fit.sem(smod_clim_pet_tri) |> mutate(Hypo = "Clim + PET + TRI")
 ) |> 
   arrange(AICc) |>
-  select(Hypo, Fisher.C:AIC, K, n, AICc) |>
+  select(Hypo, Fisher.C:AIC, K, AICc) |>
   rename("SEM Model" = Hypo) |>
-  knitr::kable()
+  
+  flextable() |>
+  colformat_double(digits = 2) |>
+  colformat_double(j = c(3, 6), digits = 0) |>
+  colformat_double(j = 4, digits = 3) |>
+  add_footer_lines(
+    as_paragraph("The table shows the Akaike's Information Criteria (AIC), likelihood degrees of freedom (K), number of observations (n) and corrected Akaike's Information Criteria (AICc) for each model evaluated. The species richness (S) was used as the endogenous variable. The exogenous variables included actual evapotranspiration (AET), enhanced vegetation index homogeneity (EHM), mean annual precipitation (MAP), potential evapotranspiration (PET), precipitation seasonality (PSE), temperature seasonality (TSE), terrain ruggedness index (TRI) and water deficit (WDF).")
+  ) |>
+  fontsize(size = 9, part = "footer") |>
+  flextable::width(width = c(1.5, rep(0.7, 6)))
 ```
 
+Results of model selection to identify the best SEM model for exploring determinants of species richness along elevational gradients.
+:::
 
-# Supplementary figures {.unnumbered}
+::: {#suppfig-correlation}
 
 ```{r fig.width=7, fig.height=7}
-#| label: fig-correlation
-#| fig-cap: Final set of uncorrelated explanatory variables for (a) Morni Hills, (b) Chail WLS, (c) Churdhar WLS, and (d) All Sites. The values represent Spearman's correlation coefficient in precent and the transparency of these values is scaled to the magnitude of the correlation coefficient.
 
+# svg("figs/figs1_env-corr.svg", width = 7, height = 7)
+# png("figs/figs1_env-corr.png", width = 7, height = 7, units = "in", res = 600)
+# pdf("figs/figs1_env-corr.pdf", width = 7, height = 7)
 
 ## identify uncorrelated variables ------
+
+mycorrplot <- function(data, title, ...){
+  cor(data, method = "spearman") |>
+  corrplot::corrplot(
+    method = "color", type = "upper",
+    addCoef.col = "black",
+    col = corrplot::COL2("BrBG"), addgrid.col = "grey",
+    diag = TRUE, order = "alphabet",
+    tl.pos = "d", tl.col = "black",
+    cl.pos = "n", title = title,
+    ...
+  )
+}
 
 par(mfrow = c(2, 2))
 
@@ -1210,14 +1341,7 @@ par(mfrow = c(2, 2))
 
 site_morni |>
   select(WDF, AET, EHM, PSE) |>
-  cor(method = "spearman") |>
-  corrplot::corrplot(
-    method = "number", type = "upper",
-    diag = TRUE, order = "alphabet",
-    tl.pos = "d", tl.col = "black",
-    cl.pos = "n", title = "\na) Morni Hills",
-    addCoefasPercent = TRUE
-  )
+  mycorrplot(title = "\na) Morni Hills")
 
 
 # ## Chail WLS
@@ -1236,14 +1360,7 @@ site_morni |>
 
 site_chail |>
   select(TRI, MAP, PET) |>
-  cor(method = "spearman") |>
-  corrplot::corrplot(
-    method = "number", type = "upper",
-    diag = TRUE, order = "alphabet",
-    tl.pos = "d", tl.col = "black",
-    cl.pos = "n", title = "\nb) Chail WLS",
-    addCoefasPercent = TRUE
-  )
+   mycorrplot(title = "\nb) Chail WLS")
 
 
 # ## Churdhar WLS
@@ -1254,14 +1371,7 @@ site_chail |>
 
 site_churdhar |>
   select(AET, EHM, MAP, TRI, TSE) |>
-  cor(method = "spearman") |>
-  corrplot::corrplot(
-    method = "number", type = "upper",
-    diag = TRUE, order = "alphabet",
-    tl.pos = "d", tl.col = "black",
-    cl.pos = "n", title = "\nc) Churdhar WLS",
-    addCoefasPercent = TRUE
-  )
+   mycorrplot(title = "\nc) Churdhar WLS")
 
 
 # ## All Sites
@@ -1272,21 +1382,22 @@ site_churdhar |>
 
 site_all |>
   select(NPP, EHM, TRI) |>
-  cor(method = "spearman") |>
-  corrplot::corrplot(
-    method = "number", type = "upper",
-    diag = TRUE, order = "alphabet",
-    tl.pos = "d", tl.col = "black",
-    cl.pos = "n", title = "\nd) All Sites",
-    addCoefasPercent = TRUE
-  )
+  mycorrplot(title = "\nd) All Sites")
+
+# dev.off()
 ```
 
-```{r fig.width=7, fig.height=7}
-#| label: fig-qqplot
-#| fig-cap: Quantile-quantile (Q-Q) plot demonstrating model diagnostics for elevational patterns of species richness in (a) Morni Hills, (b) Chail WLS, (c) Churdhar WLS, and (d) All Sites. The plot shows the overall deviations from the simulation-based expected distribution with added tests for correct distribution (KS test), dispersion and outliers. The outliers are defined as values outside the simulation envelope. The plot assesses the goodness-of-fit between observed and expected quantiles, aiding in evaluating model assumptions and performance.
+Final set of uncorrelated explanatory variables for (a) Morni Hills, (b) Chail WLS, (c) Churdhar WLS, and (d) All Sites. The values represent Spearman's correlation coefficient and the transparency of background is scaled to the magnitude of correlation coefficient.
+:::
 
-# pdf("figs/fig9.pdf", width = 7, height = 7)
+\newpage
+
+:::{#suppfig-qqplot}
+
+```{r fig.width=7, fig.height=7}
+
+# pdf("figs/figs2_qqplot.pdf", width = 7, height = 7)
+# png("figs/figs2_qqplot.png", width = 7, height = 7, units = "in", res = 600)
 
 par(mfrow = c(2, 2))
 
@@ -1313,12 +1424,18 @@ mtext("d)", line = 1.5, adj = 0, font = 2)
 # dev.off()
 ```
 
+Quantile-quantile (Q-Q) plot demonstrating model diagnostics for elevational patterns of species richness in (a) Morni Hills, (b) Chail WLS, (c) Churdhar WLS, and (d) All Sites. The plot shows the overall deviations from the simulation-based expected distribution with added tests for correct distribution (KS test), dispersion and outliers. The outliers are defined as values outside the simulation envelope. The plot assesses the goodness-of-fit between observed and expected quantiles, aiding in evaluating model assumptions and performance.
+:::
+
+\newpage
+
+:::{#suppfig-residual-plot}
 
 ```{r fig.width=7, fig.height=7}
-#| label: fig-residual-plot
-#| fig-cap: Residual plots showing the deviations in model residuals against the model predictions for elevational patterns of species richness in (a) Morni Hills, (b) Chail WLS, (c) Churdhar WLS, and (d) All Sites. The deviation from the uniformity (in the y-direction) was estimated by comparing the empirical 0.25, 0.5 and 0.75 quantiles in the y-direction (red solid lines) with the theoretical 0.25, 0.5 and 0.75 quantiles (dashed black line). The simulation-based outliers are highlighted as red stars.
 
-# pdf("figs/fig10.pdf", width = 7, height = 7)
+# pdf("figs/figs3_residual-plot.pdf", width = 7, height = 7)
+# png("figs/figs3_residual-plot.png", width = 7, height = 7, units = "in", 
+#     res = 600)
 
 par(mfrow = c(2, 2))
 
@@ -1344,5 +1461,72 @@ mtext("d)", line = 1.5, adj = 0, font = 2)
 
 # dev.off()
 ```
+
+Residual plots showing the deviations in model residuals against the model predictions for elevational patterns of species richness in (a) Morni Hills, (b) Chail WLS, (c) Churdhar WLS, and (d) All Sites. The deviation from the uniformity (in the y-direction) was estimated by comparing the empirical 0.25, 0.5 and 0.75 quantiles in the y-direction (red solid lines) with the theoretical 0.25, 0.5 and 0.75 quantiles (dashed black line). The simulation-based outliers are highlighted as red stars.
+:::
+
+\newpage
+
+:::{#suppfig-site-pred}
+
+```{r fig.width=7, fig.height=5}
+read.csv("output/site_env.csv") |>
+  pivot_longer(cols = -c(site, S), names_to = "vars", values_to = "vals") |>
+  mutate(vars = factor(vars, c("MAT", "TSE", "MAP", "PSE", "NPP", "SOC",
+                               "EHM", "TRI", "AET", "PET", "WDF", "ELE")),
+         site = factor(site, c("Morni", "Chail", "Churdhar", "All"))) |>
+  ggplot(aes(x = site, y = vals, color = vars)) +
+  geom_boxplot(fill = "grey95", linewidth = 0.25) +
+  scale_color_manual(values = c("#d55e00", "#d55e00", "#659abb", "#659abb",
+                                "#009e73", "#009e73", "#a43f77", "#a43f77",
+                                "#aea30e", "#aea30e", "#aea30e", "#686868")) +
+  facet_wrap(.~vars, scales = "free_y") +
+  theme_bw(base_size = 10) +
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        strip.background = element_blank(),
+        axis.text.x = element_text(angle = 30, vjust = 1, hjust = 1),
+        axis.title = element_blank())
+
+# ggsave("figs/figs4_site-predictors.pdf", width = 7, height = 5)
+# ggsave("figs/figs4_site-predictors.png", width = 7, height = 5)
+```
+
+Boxplots showing the distribution of environmental variables across the study sites. The predictor variables included Mean Annual Temperature (MAT) and Temperature Seasonality (TSE) as temperature variables; Mean Total Annual Precipitation (MAP) and Precipitation Seasonality (PSE) as precipitation variables; Net Primary Productivity (NPP) and Soil Organic Carbon (SOC) as energy variables; Enhanced Vegetation Index Homogeneity Index (EHM) and Terrain Ruggedness Index (TRI) as heterogeneity variables; Actual Evapotranspiration (AET), Potential Evapotranspiration (PET), Water Deficit (WDF) as water availability variables; and elevation (ELE) to represent the elevational gradients.
+:::
+
+\newpage
+
+::: {#suppfig-elev-pred}
+
+```{r fig.width=7, fig.height=5}
+read.csv("output/site_env.csv") |>
+  filter(site == "All") |>
+  pivot_longer(cols = -c(site, ELE), names_to = "vars", values_to = "vals") |>
+  mutate(vars = factor(vars, c("MAT", "TSE", "MAP", "PSE", "NPP", "SOC",
+                               "EHM", "TRI", "AET", "PET", "WDF", "S"))) |>
+  ggplot(aes(x = ELE, y = vals, color = vars)) +
+  geom_point(alpha = 0.7, color = "grey") +
+  geom_smooth(se = FALSE) +
+  scale_color_manual(values = c("#d55e00", "#d55e00", "#659abb", "#659abb",
+                                "#009e73", "#009e73", "#a43f77", "#a43f77",
+                                "#aea30e", "#aea30e", "#aea30e", "#686868")) +
+  facet_wrap(.~vars, scales = "free_y") +
+  labs(x = "Elevation (m)") +
+  theme_bw(base_size = 10) +
+  theme(legend.position = "none", 
+        panel.grid = element_blank(),
+        strip.background = element_blank(),
+        axis.title.y = element_blank())
+
+# ggsave("figs/figs5_elevation-predictors.pdf", width = 7, height = 5)
+# ggsave("figs/figs5_elevation-predictors.png", width = 7, height = 5)
+```
+
+Distribution of predictors variables and species richness (S) along the entire elevational gradient. The colours represent the category of environmental variables. The predictor variables included Mean Annual Temperature (MAT) and Temperature Seasonality (TSE) as temperature variables; Mean Total Annual Precipitation (MAP) and Precipitation Seasonality (PSE) as precipitation variables; Net Primary Productivity (NPP) and Soil Organic Carbon (SOC) as energy variables; Enhanced Vegetation Index Homogeneity Index (EHM) and Terrain Ruggedness Index (TRI) as heterogeneity variables; Actual Evapotranspiration (AET), Potential Evapotranspiration (PET), and Water Deficit (WDF) as water availability variables.
+:::
+
+\newpage
+
 
 # References {.unnumbered}

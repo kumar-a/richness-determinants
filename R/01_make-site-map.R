@@ -142,7 +142,7 @@ myvp <- grid::viewport(
 )
 
 # ## save map to local disk
-tmap_save(main_map, filename = "figs/site_map.pdf", insets_tm = inset_map,
+tmap_save(main_map, filename = "figs/fig2_site-map.pdf", insets_tm = inset_map,
           insets_vp = myvp, height = 5, width = 7, units = "in")
-tmap_save(main_map, filename = "figs/site_map.png", insets_tm = inset_map,
+tmap_save(main_map, filename = "figs/fig2_site-map.png", insets_tm = inset_map,
           insets_vp = myvp, height = 5, width = 7, units = "in", dpi = 600)

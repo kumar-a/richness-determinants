@@ -1,13 +1,22 @@
 # Determinants of Plant Species Richness along Elevational Gradients: Insights with Climate, Energy and Water-Energy Dynamics
 **Authors:** [Abhishek Kumar](https://akumar.netlify.app/)<sup>#</sup>, [Meenu Patil](https://www.researchgate.net/profile/Meenu-Patil), [Pardeep Kumar](https://www.researchgate.net/profile/Pardeep-Kumar-22), [Anand Narain Singh](https://www.researchgate.net/profile/Anand-Singh-15)\*   
 **Affiliation:** *Soil Ecosystem and Restoration Ecology Lab, Department of Botany, Panjab University, Chandigarh 160014, India*  
-\*Corresponding author: dranand1212@gmail.com; ansingh@pu.ac.in  
-<sup>#</sup>Maintainer: abhikumar.pu@gmail.com
+\*Corresponding author: <dranand1212@gmail.com>; <ansingh@pu.ac.in>  
+<sup>#</sup>Maintainer: <abhikumar.pu@gmail.com>
 
 ## Directory structure
 
 ```
-.
+. 
+  |- R
+    |- 01_make-site-map.R
+    |- 02_standardise-plant-names.R
+    |- 03_get-elevation-ranges.R
+    |- 04_calculate-richness.R
+    |- 05_extract-explanatory-variables.R
+    |- 06_compare-top-model.R
+    |- calculate_band_area.R
+    |- extract_climate.R
   |- data
     |- hkh
     |- chail_plants.csv
@@ -27,10 +36,6 @@
     |- site_soc_soilgrid.tif
     |- site_states.gpkg
     |- site_tri_earthenv.tif
-  |- figs
-    |- bmod_sem.pdf
-    |- hypothetical_sem.pdf
-    |- site_map.pdf
   |- gv
     |- bmod_sem.gv
     |- hypothetical_sem.gv
@@ -46,15 +51,6 @@
     |- site_plants_wcvp.csv
     |- site_spec_elev.csv
     |- top_mod_comparison.csv
-  |- R
-    |- calculate_band_area.R
-    |- calculate_richness.R
-    |- compare_top_model.R
-    |- extract_climate.R
-    |- extract_explanatory_variables.R
-    |- get_elevation_ranges.R
-    |- make_site_map.R
-    |- standardise_plant_names.R
   |- apa7.csl
   |- credit_author.csv
   |- index.qmd
@@ -62,6 +58,19 @@
   |- refs.bib
   |- richness-determinants.Rproj
 ```
+
+## Description of `R` scripts
+
+| File name | Description |  
+|-----------|-------------|
+| [01_make-site-map.R](/R/01_make-site-map.R) | `R` codes to prepare the map for study sites ([fig2_site-map.pdf](/figs/fig2_site-map.pdf)) |
+| [02_standardise-plant-names.R](/R/02_standardise-plant-names.R) | `R` codes to standardise botanical names according to WCVP (Govaerts et al., [2021](https://doi.org/10.1038/s41597-021-00997-6)). The standardised botanical names are saved as [site_plants_wcvp.csv](/output/site_plants_wcvp.csv) |
+| [03_get-elevation-ranges.R](/R/03_get-elevation-ranges.R) | `R` codes to retrieve the species elevational ranges from published database (Rana & Rawat [2017](https://doi.org/10.3390/data2040036), [2019](https://doi.org/10.15468/zdeuix)) |
+| [04_calculate-richness.R](/R/04_calculate-richness.R) | `R` codes with function used to calculate species richness from compiled dataset for each study site |
+| [05_extract-explanatory-variables.R](/R/05_extract-explanatory-variables.R) | `R` codes to extract mean values of each explanatory variable for each site |
+| [06_compare-top-model.R](/R/06_compare-top-model.R) | `R` codes to compare top models for each study site |
+| [calculate_band_area.R](/R/calculate_band_area.R) | `R` codes for calculating the planar and slope-corrected area for each 100-m elevational band for each study site |
+| [extract_climate.R](/R/extract_climate.R) | `R` script to extract climate data from WorldClim2 database (Fick & Hijmans [2017](https://doi.org/10.1002/joc.5086)) and process to prepare Walter-Leith Diagrams for study sites |
 
 ## Description of primary data files
 
@@ -86,14 +95,6 @@
 | [site_states.gpkg](/data/site_states.gpkg) | Spatial boundaries for north-western Indian States covering the study sites in the Western Himalayas |
 | [site_tri_earthenv.gpkg](/data/site_tri_earthenv.gpkg) | Cropped terrain ruggedness index (TRI) data obtained from Amatulli et al. ([2018](https://doi.org/10.1038/sdata.2018.40)) |
 
-## Description of figures
-
-| File name | Description |  
-|-----------|-------------|
-| [bmod_sem.pdf](/figs/bmod_sem.pdf) | Figure depicted final best SEM model for species richness |
-| [hypothetical_sem.pdf](/figs/hypothetical_sem.pdf) | A priori hypothetical conceptual model for determinants of species richness |
-| [site_map.pdf](/figs/site_map.pdf) | Map showing the location and elevation profile of study sites. This map was prepared using the [make_site_map.R](/R/make_site_map.R) script |
-
 ## Description of [Graphviz](https://graphviz.org/) scripts
 
 | File name | Description |  
@@ -107,28 +108,15 @@
 |-----------|-------------|
 | [0417447-210914110416597.zip](/output/0417447-210914110416597.zip) | Species distribution dataset (Rana & Rawat [2017](https://doi.org/10.3390/data2040036), [2019](https://doi.org/10.15468/zdeuix)) downloaded from [GBIF](https://www.gbif.org/) via `rgbif` package |  
 | [band_area.csv](/output/band_area.csv) | Calculated planar and slope-corrected area for each elevational band using the [calculate_band_area.R](/R/calculate_band_area.R) script |
-| [band_richness.csv](/output/band_richness.csv) | Estimated species richness for 100-m elevational bands for each site using the [calculate_richness.R](/R/calculate_richness.R) script |
-| [chail_elev.tif](/output/chail_elev.tif) | Cropped elevation data for Chail WLS downloaded using the [extract_explanatory_variables.R](/R/extract_explanatory_variables.R) script |
-| [churdhar_elev.tif](/output/churdhar_elev.tif) | Cropped elevation data for Churdhar WLS downloaded using the [extract_explanatory_variables.R](/R/extract_explanatory_variables.R) script |
-| [morni_elev.tif](/output/morni_elev.tif) | Cropped elevation data for Morni Hills downloaded using the [extract_explanatory_variables.R](/R/extract_explanatory_variables.R) script |
-| [site_elev.tif](/output/site_elev.tif) | Cropped elevation data for study area downloaded using the [extract_explanatory_variables.R](/R/extract_explanatory_variables.R) script |
-| [site_env.tif](/output/site_env.tif) | Prepared dataset with species richness and explanatory variables for each site processed using the [extract_explanatory_variables.R](/R/extract_explanatory_variables.R) script |
-| [site_plants_wcvp.csv](/output/site_plants_wcvp.csv) | Combined species check-list with botanical names standardised according to World Checklist of Vascular Plants (WCVP, Govaerts et al., [2021](https://doi.org/10.1038/s41597-021-00997-6)) using the [standardise_plant_names.R](/R/standardise_plant_names.R) script |
-| [site_spec_elev.csv](/output/site_spec_elev.csv) | Finally prepared dataset for standardised unique species and their elevational ranges for selected study sites using the [get_elevation_ranges.R](/R/get_elevation_ranges.R) script |
-| [top_mod_comparison.csv](/output/top_mod_comparison.csv) | Comparison of identified top model with previously proposed models of species richness using the [compare_top_model.R](/R/compare_top_model.R) script |
-
-## Description of `R` scripts
-
-| File name | Description |  
-|-----------|-------------|
-| [calculate_band_area.R](/R/calculate_band_area.R) | `R` codes for calculating the planar and slope-corrected area for each 100-m elevational band for each study site |
-| [calculate_richness.R](/R/calculate_richness.R) | `R` codes with function used to calculate species richness from compiled dataset for each study site |
-| [compare_top_model.R](/R/compare_top_model.R) | |
-| [extract_climate.R](/R/extract_climate.R) | `R` script to extract climate data from WorldClim2 database (Fick & Hijmans [2017](https://doi.org/10.1002/joc.5086)) and process to prepare Walter-Leith Diagrams for study sites |
-| [extract_explanatory_variables.R](/R/extract_explanatory_variables.R) | `R` codes to extract mean values of each explanatory variable for each site |
-| [get_elevation_ranges.R](/R/get_elevation_ranges.R) | `R` codes to retrieve the species elevational ranges from published database (Rana & Rawat [2017](https://doi.org/10.3390/data2040036), [2019](https://doi.org/10.15468/zdeuix)) |
-| [make_site_map.R](/R/make_site_map.R) | `R` codes to prepare the map for study sites ([site_map.pdf](/figs/site_map.pdf)) |
-| [standardise_plant_names.R](/R/standardise_plant_names.R) | `R` codes to standardise botanical names according to WCVP (Govaerts et al., [2021](https://doi.org/10.1038/s41597-021-00997-6)). The standardised botanical names are saved as [site_plants_wcvp.csv](/output/site_plants_wcvp.csv) |
+| [band_richness.csv](/output/band_richness.csv) | Estimated species richness for 100-m elevational bands for each site using the [04_calculate-richness.R](/R/04_calculate-richness.R) script |
+| [chail_elev.tif](/output/chail_elev.tif) | Cropped elevation data for Chail WLS downloaded using the [05_extract-explanatory-variables.R](/R/05_extract-explanatory-variables.R) script |
+| [churdhar_elev.tif](/output/churdhar_elev.tif) | Cropped elevation data for Churdhar WLS downloaded using the [05_extract-explanatory-variables.R](/R/05_extract-explanatory-variables.R) script |
+| [morni_elev.tif](/output/morni_elev.tif) | Cropped elevation data for Morni Hills downloaded using the [05_extract-explanatory-variables.R](/R/05_extract-explanatory-variables.R) script |
+| [site_elev.tif](/output/site_elev.tif) | Cropped elevation data for study area downloaded using the [05_extract-explanatory-variables.R](/R/05_extract-explanatory-variables.R) script |
+| [site_env.tif](/output/site_env.tif) | Prepared dataset with species richness and explanatory variables for each site processed using the [05_extract-explanatory-variables.R](/R/05_extract-explanatory-variables.R) script |
+| [site_plants_wcvp.csv](/output/site_plants_wcvp.csv) | Combined species check-list with botanical names standardised according to World Checklist of Vascular Plants (WCVP, Govaerts et al., [2021](https://doi.org/10.1038/s41597-021-00997-6)) using the [02_standardise-plant-names.R](/R/02_standardise-plant-names.R) script |
+| [site_spec_elev.csv](/output/site_spec_elev.csv) | Finally prepared dataset for standardised unique species and their elevational ranges for selected study sites using the [03_get-elevation-ranges.R](/R/03_get-elevation-ranges.R) script |
+| [top_mod_comparison.csv](/output/top_mod_comparison.csv) | Comparison of identified top model with previously proposed models of species richness using the [06_compare-top-model.R](/R/06_compare-top-model.R) script |
 
 ## Description of other files
 
