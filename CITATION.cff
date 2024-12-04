@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as below."
+authors:
+- family-names: "Kumar"
+  given-names: "Abhishek"
+  orcid: "https://orcid.org/0000-0003-2252-7623"
+title: "Dataset and R Codes for Determinants of Plant Species Richness along Elevational Gradients: Insights with Climate, Energy and Water-Energy Dynamics"
+doi: 10.6084/m9.figshare.24056943
+date-released: 2024-09-12
+url: "https://github.com/kumar-a/richness-determinants"
+
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Kumar"
+    given-names: "Abhishek"
+    orcid: "https://orcid.org/0000-0003-2252-7623"
+  - family-names: "Patil"
+    given-names: "Meenu"
+    orcid: "https://orcid.org/0000-0002-7664-7877"
+  - family-names: "Kumar"
+    given-names: "Pardeep"
+    orcid: "https://orcid.org/0000-0001-6707-1485"
+  - family-names: "Singh"
+    given-names: "Anand Narain"
+    orcid: "https://orcid.org/0000-0002-0148-8680"
+  doi: "10.1186/s13717-024-00563-z"
+  journal: "Ecological Processes"
+  month: 12
+  start: 86 # First page number
+  title: "Determinants of plant species richness along elevational gradients: Insights with climate, energy and water–energy dynamics"
+  volume: 13
+  year: 2024
